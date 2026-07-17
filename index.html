@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Chatty</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --teal-dark:#0b4f4a;
+    --teal:#128c7e;
+    --teal-light:#25d366;
+    --bg-chat:#e9ded3;
+    --bubble-me:#d9fdd3;
+    --bubble-them:#ffffff;
+    --text-dark:#1f2c2b;
+    --text-muted:#6b7b79;
+    --danger:#d64545;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;height:100%;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:#0b1d1b;
+    color:var(--text-dark);
+  }
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    height:100vh;
+    height:100dvh;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 0 40px rgba(0,0,0,.4);
+  }
+  .screen{
+    display:none;
+    flex-direction:column;
+    height:100%;
+    width:100%;
+  }
+  .screen.active{display:flex;}
+
+  /* ---------- Login ---------- */
+  #login-screen{
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(160deg,var(--teal-dark),var(--teal));
+    padding:32px;
+    gap:18px;
+    text-align:center;
+    color:#fff;
+  }
+  #login-screen h1{
+    font-size:2rem;
+    margin:0;
+    letter-spacing:-0.5px;
+  }
+  #login-screen p{
+    margin:0 0 8px;
+    opacity:.85;
+    font-size:.95rem;
+    max-width:280px;
+  }
+  #login-form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+    max-width:280px;
+  }
+  #login-form input{
+    padding:14px 16px;
+    border-radius:10px;
+    border:none;
+    font-size:1rem;
+    outline:none;
+  }
+  #login-form button{
+    padding:14px;
+    border-radius:10px;
+    border:none;
+    background:var(--teal-light);
+    color:#08331b;
+    font-weight:700;
+    font-size:1rem;
+    cursor:pointer;
+  }
+  #login-form button:disabled{opacity:.6;cursor:default;}
+  #login-error{color:#ffd6d6;font-size:.85rem;min-height:18px;}
+
+  /* ---------- Header commun ---------- */
+  .topbar{
+    background:var(--teal-dark);
+    color:#fff;
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-shrink:0;
+  }
+  .topbar h2{margin:0;font-size:1.1rem;font-weight:600;flex:1;}
+  .topbar .sub{font-size:.75rem;opacity:.75;}
+  .icon-btn{
+    background:transparent;border:none;color:#fff;
+    font-size:1.2rem;cursor:pointer;padding:4px 8px;
+  }
+  .avatar{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--teal-light);
+    color:#08331b;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.95rem;flex-shrink:0;
+  }
+
+  /* ---------- Contacts ---------- */
+  #contacts-list{
+    flex:1;overflow-y:auto;background:#fff;
+  }
+  .contact-row{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 16px;
+    border-bottom:1px solid #f0f0f0;
+    cursor:pointer;
+  }
+  .contact-row:hover{background:#f7faf9;}
+  .contact-name{font-weight:600;font-size:.98rem;}
+  .contact-hint{font-size:.8rem;color:var(--text-muted);}
+  #contacts-empty{
+    padding:40px 24px;text-align:center;color:var(--text-muted);
+  }
+  #refresh-contacts{
+    margin-left:auto;
+  }
+
+  /* ---------- Chat ---------- */
+  #messages{
+    flex:1;overflow-y:auto;
+    background:var(--bg-chat);
+    padding:14px 10px;
+    display:flex;flex-direction:column;
+    gap:4px;
+  }
+  .bubble-row{display:flex;width:100%;}
+  .bubble-row.me{justify-content:flex-end;}
+  .bubble-row.them{justify-content:flex-start;}
+  .bubble{
+    max-width:75%;
+    padding:8px 10px 6px;
+    border-radius:10px;
+    font-size:.92rem;
+    line-height:1.35;
+    position:relative;
+    box-shadow:0 1px 1px rgba(0,0,0,.08);
+    word-wrap:break-word;
+  }
+  .bubble.me{background:var(--bubble-me);border-top-right-radius:2px;}
+  .bubble.them{background:var(--bubble-them);border-top-left-radius:2px;}
+  .bubble .time{
+    display:block;text-align:right;
+    font-size:.65rem;color:var(--text-muted);
+    margin-top:2px;
+  }
+  #composer{
+    display:flex;gap:8px;
+    padding:10px;
+    background:#f0f0f0;
+    flex-shrink:0;
+  }
+  #composer input{
+    flex:1;
+    padding:12px 16px;
+    border-radius:22px;
+    border:none;
+    font-size:.95rem;
+    outline:none;
+  }
+  #composer button{
+    width:44px;height:44px;
+    border-radius:50%;
+    border:none;
+    background:var(--teal);
+    color:#fff;
+    font-size:1.1rem;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  #chat-empty{
+    text-align:center;color:var(--text-muted);
+    padding:20px;font-size:.85rem;
+  }
+
+  .hidden{display:none !important;}
+  ::-webkit-scrollbar{width:0;height:0;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ ECRAN LOGIN ============ -->
+  <section id="login-screen" class="screen active">
+    <h1>Chatty</h1>
+    <p>Entre un pseudo pour commencer à discuter. Pas besoin de mot de passe pour l'instant.</p>
+    <form id="login-form">
+      <input id="username-input" type="text" placeholder="Ton pseudo" maxlength="24" autocomplete="off" required>
+      <button type="submit" id="login-submit">Entrer</button>
+      <div id="login-error"></div>
+    </form>
+  </section>
+
+  <!-- ============ ECRAN CONTACTS ============ -->
+  <section id="contacts-screen" class="screen">
+    <div class="topbar">
+      <div class="avatar" id="my-avatar">?</div>
+      <div>
+        <h2 id="my-username-label">Moi</h2>
+        <div class="sub">Choisis quelqu'un à qui écrire</div>
+      </div>
+      <button class="icon-btn" id="refresh-contacts" title="Rafraîchir">⟳</button>
+      <button class="icon-btn" id="logout-btn" title="Se déconnecter">⎋</button>
+    </div>
+    <div id="contacts-list"></div>
+  </section>
+
+  <!-- ============ ECRAN CHAT ============ -->
+  <section id="chat-screen" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" id="back-btn">←</button>
+      <div class="avatar" id="peer-avatar">?</div>
+      <div>
+        <h2 id="peer-username-label">—</h2>
+        <div class="sub" id="chat-sub">temps réel</div>
+      </div>
+    </div>
+    <div id="messages"><div id="chat-empty">Aucun message pour l'instant. Dis bonjour 👋</div></div>
+    <form id="composer">
+      <input id="message-input" type="text" placeholder="Écris un message" autocomplete="off" required>
+      <button type="submit">➤</button>
+    </form>
+  </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ===================================================================
+   CONFIGURATION SUPABASE
+   Remplace ces deux valeurs par celles de ton projet Supabase :
+   Project Settings > API > Project URL / anon public key
+   =================================================================== */
+const SUPABASE_URL = "https://vdrjnbiyxepslxiclpox.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_czTGbYl7EVehRbkjvEwhEw_JPWoH_Nb";
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ---------------- Etat local ---------------- */
+let me = localStorage.getItem("chatty_username") || null;
+let activePeer = null;
+let messagesChannel = null;
+
+/* ---------------- Elements ---------------- */
+const screens = {
+  login: document.getElementById("login-screen"),
+  contacts: document.getElementById("contacts-screen"),
+  chat: document.getElementById("chat-screen"),
+};
+function showScreen(name){
+  Object.values(screens).forEach(s => s.classList.remove("active"));
+  screens[name].classList.add("active");
+}
+
+function initials(name){
+  return (name || "?").trim().slice(0,2).toUpperCase();
+}
+
+/* ---------------- Login ---------------- */
+const loginForm = document.getElementById("login-form");
+const usernameInput = document.getElementById("username-input");
+const loginError = document.getElementById("login-error");
+const loginSubmit = document.getElementById("login-submit");
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const desired = usernameInput.value.trim();
+  if(!desired) return;
+  loginError.textContent = "";
+  loginSubmit.disabled = true;
+  loginSubmit.textContent = "...";
+  try{
+    const { data: existing, error: fetchErr } = await supabaseClient
+      .from("users")
+      .select("username")
+      .eq("username", desired)
+      .maybeSingle();
+    if(fetchErr) throw fetchErr;
+
+    if(!existing){
+      const { error: insertErr } = await supabaseClient
+        .from("users")
+        .insert({ username: desired });
+      if(insertErr) throw insertErr;
+    }
+    me = desired;
+    localStorage.setItem("chatty_username", me);
+    enterContacts();
+  }catch(err){
+    console.error(err);
+    loginError.textContent = "Erreur : " + (err.message || "impossible de se connecter");
+  }finally{
+    loginSubmit.disabled = false;
+    loginSubmit.textContent = "Entrer";
+  }
+});
+
+/* ---------------- Contacts ---------------- */
+const contactsList = document.getElementById("contacts-list");
+const myAvatar = document.getElementById("my-avatar");
+const myUsernameLabel = document.getElementById("my-username-label");
+
+async function enterContacts(){
+  myAvatar.textContent = initials(me);
+  myUsernameLabel.textContent = me;
+  showScreen("contacts");
+  await loadContacts();
+}
+
+async function loadContacts(){
+  contactsList.innerHTML = "<div id='contacts-empty'>Chargement...</div>";
+  const { data, error } = await supabaseClient
+    .from("users")
+    .select("username")
+    .neq("username", me)
+    .order("username", { ascending: true });
+
+  if(error){
+    contactsList.innerHTML = "<div id='contacts-empty'>Erreur de chargement.</div>";
+    console.error(error);
+    return;
+  }
+  if(!data || data.length === 0){
+    contactsList.innerHTML = "<div id='contacts-empty'>Personne d'autre pour l'instant. Partage l'app à un ami !</div>";
+    return;
+  }
+  contactsList.innerHTML = "";
+  data.forEach(u => {
+    const row = document.createElement("div");
+    row.className = "contact-row";
+    row.innerHTML = `
+      <div class="avatar">${initials(u.username)}</div>
+      <div>
+        <div class="contact-name">${escapeHtml(u.username)}</div>
+        <div class="contact-hint">Toucher pour discuter</div>
+      </div>`;
+    row.addEventListener("click", () => enterChat(u.username));
+    contactsList.appendChild(row);
+  });
+}
+
+document.getElementById("refresh-contacts").addEventListener("click", loadContacts);
+document.getElementById("logout-btn").addEventListener("click", () => {
+  localStorage.removeItem("chatty_username");
+  me = null;
+  showScreen("login");
+});
+
+/* ---------------- Chat ---------------- */
+const messagesEl = document.getElementById("messages");
+const peerAvatar = document.getElementById("peer-avatar");
+const peerUsernameLabel = document.getElementById("peer-username-label");
+const composer = document.getElementById("composer");
+const messageInput = document.getElementById("message-input");
+
+async function enterChat(peer){
+  activePeer = peer;
+  peerAvatar.textContent = initials(peer);
+  peerUsernameLabel.textContent = peer;
+  showScreen("chat");
+  await loadMessages();
+  subscribeToMessages();
+}
+
+document.getElementById("back-btn").addEventListener("click", () => {
+  unsubscribeFromMessages();
+  activePeer = null;
+  showScreen("contacts");
+});
+
+function bubbleHtml(msg){
+  const mine = msg.sender_username === me;
+  const time = new Date(msg.created_at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  return `
+    <div class="bubble-row ${mine ? "me" : "them"}">
+      <div class="bubble ${mine ? "me" : "them"}">
+        ${escapeHtml(msg.content)}
+        <span class="time">${time}</span>
+      </div>
+    </div>`;
+}
+
+async function loadMessages(){
+  messagesEl.innerHTML = "<div id='chat-empty'>Chargement...</div>";
+  const { data, error } = await supabaseClient
+    .from("messages")
+    .select("*")
+    .or(
+      `and(sender_username.eq.${me},receiver_username.eq.${activePeer}),and(sender_username.eq.${activePeer},receiver_username.eq.${me})`
+    )
+    .order("created_at", { ascending: true });
+
+  if(error){
+    messagesEl.innerHTML = "<div id='chat-empty'>Erreur de chargement.</div>";
+    console.error(error);
+    return;
+  }
+  if(!data || data.length === 0){
+    messagesEl.innerHTML = "<div id='chat-empty'>Aucun message pour l'instant. Dis bonjour 👋</div>";
+    return;
+  }
+  messagesEl.innerHTML = data.map(bubbleHtml).join("");
+  scrollToBottom();
+}
+
+function scrollToBottom(){
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function subscribeToMessages(){
+  unsubscribeFromMessages();
+  messagesChannel = supabaseClient
+    .channel("messages-" + me + "-" + activePeer)
+    .on("postgres_changes",
+      { event: "INSERT", schema: "public", table: "messages" },
+      (payload) => {
+        const msg = payload.new;
+        const isForThisConversation =
+          (msg.sender_username === me && msg.receiver_username === activePeer) ||
+          (msg.sender_username === activePeer && msg.receiver_username === me);
+        if(!isForThisConversation) return;
+        if(messagesEl.querySelector("#chat-empty")) messagesEl.innerHTML = "";
+        messagesEl.insertAdjacentHTML("beforeend", bubbleHtml(msg));
+        scrollToBottom();
+      }
+    )
+    .subscribe();
+}
+
+function unsubscribeFromMessages(){
+  if(messagesChannel){
+    supabaseClient.removeChannel(messagesChannel);
+    messagesChannel = null;
+  }
+}
+
+composer.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const content = messageInput.value.trim();
+  if(!content || !activePeer) return;
+  messageInput.value = "";
+  const { error } = await supabaseClient
+    .from("messages")
+    .insert({
+      sender_username: me,
+      receiver_username: activePeer,
+      content: content
+    });
+  if(error){
+    console.error(error);
+    alert("Message non envoyé : " + error.message);
+  }
+});
+
+function escapeHtml(str){
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ---------------- Démarrage ---------------- */
+if(me){
+  enterContacts();
+}
+</script>
+</body>
+</html>
