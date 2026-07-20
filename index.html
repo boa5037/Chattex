@@ -7,86 +7,47 @@
 <link rel="icon" href="data:,">
 <style>
   :root{
-    --teal-dark:#0b4f4a;
-    --teal:#128c7e;
-    --teal-light:#25d366;
-    --bg-chat:#e9ded3;
-    --bubble-me:#d9fdd3;
-    --bubble-them:#ffffff;
-    --text-dark:#1f2c2b;
-    --text-muted:#6b7b79;
-    --danger:#d64545;
-    --online:#25d366;
+    --teal-dark:#0b4f4a; --teal:#128c7e; --teal-light:#25d366;
+    --bg-chat:#e9ded3; --bubble-me:#d9fdd3; --bubble-them:#ffffff;
+    --text-dark:#1f2c2b; --text-muted:#6b7b79; --danger:#d64545; --online:#25d366;
   }
   *{box-sizing:border-box;}
-  html,body{
-    margin:0;padding:0;height:100%;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:#0b1d1b;
-    color:var(--text-dark);
-  }
-  #app{
-    max-width:480px;margin:0 auto;height:100vh;height:100dvh;
-    background:#fff;display:flex;flex-direction:column;overflow:hidden;
-    position:relative;box-shadow:0 0 40px rgba(0,0,0,.4);
-  }
+  html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#0b1d1b;color:var(--text-dark);}
+  #app{max-width:480px;margin:0 auto;height:100vh;height:100dvh;background:#fff;display:flex;flex-direction:column;overflow:hidden;position:relative;box-shadow:0 0 40px rgba(0,0,0,.4);}
   .screen{display:none;flex-direction:column;height:100%;width:100%;}
   .screen.active{display:flex;}
   .hidden{display:none !important;}
 
-  /* ---------- Login ---------- */
-  #login-screen{
-    justify-content:center;align-items:center;
-    background:linear-gradient(160deg,var(--teal-dark),var(--teal));
-    padding:32px;gap:14px;text-align:center;color:#fff;overflow-y:auto;
-  }
-  #login-screen h1{font-size:2rem;margin:0;letter-spacing:-0.5px;}
-  #login-screen p{margin:0 0 8px;opacity:.85;font-size:.95rem;max-width:280px;}
-  #login-form, #admin-login-box{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px;}
-  #login-form input, #admin-login-box input{padding:14px 16px;border-radius:10px;border:none;font-size:1rem;outline:none;}
-  #login-form button, #admin-login-box button{
-    padding:14px;border-radius:10px;border:none;background:var(--teal-light);
-    color:#08331b;font-weight:700;font-size:1rem;cursor:pointer;
-  }
-  #login-form button:disabled, #admin-login-box button:disabled{opacity:.6;cursor:default;}
-  #login-error, #admin-login-error{color:#ffd6d6;font-size:.85rem;min-height:18px;}
-  .link-btn{
-    background:transparent;border:none;color:#fff;opacity:.75;font-size:.82rem;
-    text-decoration:underline;cursor:pointer;margin-top:4px;
-  }
-  #admin-login-box{margin-top:6px;padding-top:14px;border-top:1px solid rgba(255,255,255,.25);}
+  .auth-screen{justify-content:center;align-items:center;background:linear-gradient(160deg,var(--teal-dark),var(--teal));padding:32px;gap:14px;text-align:center;color:#fff;overflow-y:auto;}
+  .auth-screen h1{font-size:2rem;margin:0;letter-spacing:-0.5px;}
+  .auth-screen p{margin:0 0 8px;opacity:.85;font-size:.95rem;max-width:280px;}
+  .auth-view{display:none;flex-direction:column;gap:10px;width:100%;max-width:280px;}
+  .auth-view.active{display:flex;}
+  .auth-view input{padding:14px 16px;border-radius:10px;border:none;font-size:1rem;outline:none;}
+  .auth-view button.primary{padding:14px;border-radius:10px;border:none;background:var(--teal-light);color:#08331b;font-weight:700;font-size:1rem;cursor:pointer;}
+  .auth-view button.primary:disabled{opacity:.6;cursor:default;}
+  .auth-error{color:#ffd6d6;font-size:.85rem;min-height:18px;}
+  .auth-success{color:#d9fdd3;font-size:.85rem;}
+  .link-btn{background:transparent;border:none;color:#fff;opacity:.8;font-size:.82rem;text-decoration:underline;cursor:pointer;margin-top:2px;}
+  .auth-links-row{display:flex;justify-content:space-between;width:100%;}
 
-  /* ---------- Header commun ---------- */
-  .topbar{
-    background:var(--teal-dark);color:#fff;padding:14px 16px;
-    display:flex;align-items:center;gap:12px;flex-shrink:0;
-  }
+  .topbar{background:var(--teal-dark);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
   .topbar h2{margin:0;font-size:1.1rem;font-weight:600;flex:1;}
   .topbar .sub{font-size:.75rem;opacity:.75;}
   .icon-btn{background:transparent;border:none;color:#fff;font-size:1.2rem;cursor:pointer;padding:4px 8px;}
-  .avatar-wrap{position:relative;flex-shrink:0;}
-  .avatar{
-    width:38px;height:38px;border-radius:50%;background:var(--teal-light);color:#08331b;
-    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;
-  }
+  .avatar-wrap{position:relative;flex-shrink:0;cursor:pointer;}
+  .avatar{width:38px;height:38px;border-radius:50%;background:var(--teal-light);color:#08331b;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;overflow:hidden;}
+  .avatar img{width:100%;height:100%;object-fit:cover;}
   .avatar.admin{background:#ffb300;}
   .avatar.group{background:#7c6fd6;color:#fff;}
-  .online-dot{
-    position:absolute;bottom:-1px;right:-1px;width:11px;height:11px;border-radius:50%;
-    background:var(--online);border:2px solid #fff;
-  }
+  .online-dot{position:absolute;bottom:-1px;right:-1px;width:11px;height:11px;border-radius:50%;background:var(--online);border:2px solid #fff;}
 
-  /* ---------- Tabs ---------- */
   .tab-bar{display:flex;background:#fff;border-bottom:1px solid #eee;flex-shrink:0;}
-  .tab-btn{
-    flex:1;padding:12px 8px;text-align:center;background:none;border:none;
-    font-size:.92rem;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:3px solid transparent;
-  }
+  .tab-btn{flex:1;padding:12px 4px;text-align:center;background:none;border:none;font-size:.86rem;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:3px solid transparent;}
   .tab-btn.active{color:var(--teal-dark);border-bottom-color:var(--teal);}
   .tab-content{flex:1;overflow-y:auto;background:#fff;display:none;}
   .tab-content.active{display:block;}
 
-  /* ---------- Listes ---------- */
   .list-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;}
   .list-row:hover{background:#f7faf9;}
   .row-main{flex:1;min-width:0;}
@@ -95,45 +56,26 @@
   .row-time{font-size:.72rem;color:var(--text-muted);flex-shrink:0;text-align:right;}
   .row-empty{padding:40px 24px;text-align:center;color:var(--text-muted);}
   .row-action-btn{border:none;background:#fdeaea;color:var(--danger);padding:6px 10px;border-radius:8px;font-size:.78rem;cursor:pointer;flex-shrink:0;}
-  .unread-badge{
-    background:var(--teal-light);color:#08331b;border-radius:999px;min-width:20px;height:20px;
-    display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;padding:0 6px;margin-top:4px;
-  }
+  .unread-badge{background:var(--teal-light);color:#08331b;border-radius:999px;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;padding:0 6px;margin-top:4px;margin-left:auto;}
   .unread-dot{width:10px;height:10px;border-radius:50%;background:var(--teal-light);margin-top:4px;margin-left:auto;}
 
-  /* ---------- Nouveau groupe ---------- */
-  #new-group-btn{
-    margin:12px 16px;padding:10px;border-radius:8px;border:1px dashed var(--teal);
-    background:#f2fbf9;color:var(--teal-dark);font-weight:600;font-size:.88rem;cursor:pointer;width:calc(100% - 32px);
-  }
-  #group-create-panel{
-    padding:14px 16px;border-bottom:1px solid #eee;background:#fafafa;
-  }
-  #group-create-panel input[type=text]{
-    width:100%;padding:10px 12px;border-radius:8px;border:1px solid #ddd;font-size:.9rem;margin-bottom:10px;outline:none;
-  }
+  #new-group-btn{margin:12px 16px;padding:10px;border-radius:8px;border:1px dashed var(--teal);background:#f2fbf9;color:var(--teal-dark);font-weight:600;font-size:.88rem;cursor:pointer;width:calc(100% - 32px);}
+  .create-panel{padding:14px 16px;border-bottom:1px solid #eee;background:#fafafa;}
+  .create-panel input[type=text]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #ddd;font-size:.9rem;margin-bottom:10px;outline:none;}
   .member-check-row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:.9rem;}
-  #group-create-panel .actions{display:flex;gap:8px;margin-top:10px;}
-  #group-create-panel button{
-    flex:1;padding:10px;border-radius:8px;border:none;font-weight:600;cursor:pointer;font-size:.88rem;
-  }
-  #group-create-submit{background:var(--teal);color:#fff;}
-  #group-create-cancel{background:#eee;color:#444;}
+  .create-panel .actions{display:flex;gap:8px;margin-top:10px;}
+  .create-panel button{flex:1;padding:10px;border-radius:8px;border:none;font-weight:600;cursor:pointer;font-size:.88rem;}
+  .btn-primary{background:var(--teal);color:#fff;}
+  .btn-secondary{background:#eee;color:#444;}
 
-  /* ---------- Chat ---------- */
-  #messages, #admin-thread-messages{
-    flex:1;overflow-y:auto;background:var(--bg-chat);padding:14px 10px;
-    display:flex;flex-direction:column;gap:4px;
-  }
+  #messages, #admin-thread-messages{flex:1;overflow-y:auto;background:var(--bg-chat);padding:14px 10px;display:flex;flex-direction:column;gap:4px;}
   .bubble-row{display:flex;width:100%;}
   .bubble-row.me{justify-content:flex-end;}
   .bubble-row.them{justify-content:flex-start;}
-  .bubble{
-    max-width:78%;padding:8px 10px 6px;border-radius:10px;font-size:.92rem;line-height:1.35;
-    position:relative;box-shadow:0 1px 1px rgba(0,0,0,.08);word-wrap:break-word;
-  }
+  .bubble{max-width:78%;padding:8px 10px 6px;border-radius:10px;font-size:.92rem;line-height:1.35;position:relative;box-shadow:0 1px 1px rgba(0,0,0,.08);word-wrap:break-word;}
   .bubble.me{background:var(--bubble-me);border-top-right-radius:2px;}
   .bubble.them{background:var(--bubble-them);border-top-left-radius:2px;}
+  .bubble.admin-msg{background:#fff3d6;}
   .bubble .sender-label{font-size:.68rem;color:var(--teal-dark);font-weight:700;display:block;margin-bottom:2px;}
   .bubble .meta{display:flex;justify-content:flex-end;align-items:center;gap:5px;margin-top:2px;}
   .bubble .time{font-size:.65rem;color:var(--text-muted);}
@@ -156,17 +98,27 @@
   @keyframes typing-blink{0%,80%,100%{opacity:.3;transform:translateY(0);}40%{opacity:1;transform:translateY(-2px);}}
   #composer{display:flex;gap:8px;padding:10px;background:#f0f0f0;flex-shrink:0;align-items:center;}
   #composer input[type=text]{flex:1;padding:12px 16px;border-radius:22px;border:none;font-size:.95rem;outline:none;}
-  #composer button, .round-btn{
-    width:44px;height:44px;border-radius:50%;border:none;background:var(--teal);color:#fff;
-    font-size:1.1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-  }
+  #composer button, .round-btn{width:44px;height:44px;border-radius:50%;border:none;background:var(--teal);color:#fff;font-size:1.1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
   #attach-btn{background:#8b8b8b;}
 
-  /* ---------- Admin ---------- */
+  #profile-screen{background:#fff;}
+  #profile-body{padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  #profile-avatar-wrap{position:relative;}
+  #profile-avatar{width:96px;height:96px;border-radius:50%;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:#08331b;overflow:hidden;}
+  #profile-avatar img{width:100%;height:100%;object-fit:cover;}
+  #profile-avatar-edit{position:absolute;bottom:0;right:0;background:var(--teal);color:#fff;border:2px solid #fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;}
+  #profile-body input[type=text], #profile-body input[type=tel]{width:100%;max-width:280px;padding:12px 14px;border-radius:10px;border:1px solid #ddd;font-size:1rem;outline:none;}
+  #profile-save-btn{width:100%;max-width:280px;padding:12px;border-radius:10px;border:none;background:var(--teal);color:#fff;font-weight:700;cursor:pointer;}
+  #profile-signout-btn{width:100%;max-width:280px;padding:12px;border-radius:10px;border:1px solid var(--danger);background:#fff;color:var(--danger);font-weight:600;cursor:pointer;}
+  #profile-status{font-size:.85rem;color:var(--teal-dark);min-height:18px;}
+  .field-label{font-size:.78rem;color:var(--text-muted);align-self:flex-start;max-width:280px;width:100%;margin-bottom:-8px;}
+
   #admin-screen .topbar{background:#7a5200;}
-  #add-user-box{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid #eee;}
-  #add-user-box input{flex:1;padding:10px 12px;border-radius:8px;border:1px solid #ddd;font-size:.9rem;outline:none;}
-  #add-user-box button{padding:10px 14px;border-radius:8px;border:none;background:var(--teal);color:#fff;font-weight:600;cursor:pointer;}
+  #admin-note{padding:12px 16px;font-size:.82rem;color:var(--text-muted);border-bottom:1px solid #eee;}
+  #admin-send-tab select, #admin-send-tab textarea{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #ddd;font-size:.9rem;margin-bottom:10px;}
+  #admin-send-tab{padding:16px;}
+  #admin-send-tab button{width:100%;padding:12px;border-radius:8px;border:none;background:#7a5200;color:#fff;font-weight:700;cursor:pointer;}
+  #admin-send-status{font-size:.85rem;color:var(--teal-dark);min-height:18px;}
 
   ::-webkit-scrollbar{width:0;height:0;}
 </style>
@@ -174,52 +126,119 @@
 <body>
 <div id="app">
 
-  <!-- ============ ECRAN LOGIN ============ -->
-  <section id="login-screen" class="screen active">
+  <!-- ============ ECRAN DE CONNEXION ============ -->
+  <section id="login-screen" class="screen active auth-screen">
     <h1>Chatty</h1>
-    <p>Entre un pseudo pour commencer à discuter. Pas besoin de mot de passe pour l'instant.</p>
-    <form id="login-form">
-      <input id="username-input" type="text" placeholder="Ton pseudo" maxlength="24" autocomplete="off" required>
-      <button type="submit" id="login-submit">Entrer</button>
-      <div id="login-error"></div>
-    </form>
-    <button type="button" class="link-btn" id="admin-toggle-link">Connexion administrateur</button>
-    <div id="admin-login-box" class="hidden">
-      <input id="admin-passcode-input" type="password" placeholder="Code administrateur" autocomplete="off">
-      <button type="button" id="admin-login-submit">Accéder à l'administration</button>
-      <div id="admin-login-error"></div>
+
+    <div id="signin-view" class="auth-view active">
+      <p>Connecte-toi avec ton email ou ton pseudo.</p>
+      <input id="signin-identifier" type="text" placeholder="Email ou pseudo" autocomplete="username" required>
+      <input id="signin-password" type="password" placeholder="Mot de passe" autocomplete="current-password" required>
+      <button type="button" class="primary" id="signin-submit">Se connecter</button>
+      <div class="auth-error" id="signin-error"></div>
+      <div class="auth-links-row">
+        <button type="button" class="link-btn" data-goto="signup-view">Créer un compte</button>
+        <button type="button" class="link-btn" data-goto="forgot-view">Mot de passe oublié ?</button>
+      </div>
+    </div>
+
+    <div id="signup-view" class="auth-view">
+      <p>Entre ton email, on t'envoie un lien de vérification pour créer ton compte.</p>
+      <input id="signup-email" type="email" placeholder="ton@email.com" autocomplete="email" required>
+      <button type="button" class="primary" id="signup-submit">Recevoir le lien de vérification</button>
+      <div class="auth-error" id="signup-error"></div>
+      <div class="auth-success hidden" id="signup-success"></div>
+      <button type="button" class="link-btn" data-goto="signin-view">← Retour à la connexion</button>
+    </div>
+
+    <div id="forgot-view" class="auth-view">
+      <p>Entre ton email, on t'envoie un lien pour choisir un nouveau mot de passe.</p>
+      <input id="forgot-email" type="email" placeholder="ton@email.com" autocomplete="email" required>
+      <button type="button" class="primary" id="forgot-submit">Envoyer le lien de réinitialisation</button>
+      <div class="auth-error" id="forgot-error"></div>
+      <div class="auth-success hidden" id="forgot-success"></div>
+      <button type="button" class="link-btn" data-goto="signin-view">← Retour à la connexion</button>
     </div>
   </section>
 
-  <!-- ============ ECRAN CONTACTS (Discussions / Amis) ============ -->
+  <!-- ============ FIN D'INSCRIPTION ============ -->
+  <section id="complete-registration-screen" class="screen auth-screen">
+    <h1>Presque fini</h1>
+    <p>Complète ton profil pour terminer la création de ton compte.</p>
+    <div class="auth-view active" style="max-width:300px;">
+      <input id="reg-first-name" type="text" placeholder="Prénom" required>
+      <input id="reg-last-name" type="text" placeholder="Nom" required>
+      <input id="reg-phone" type="tel" placeholder="Numéro de téléphone (10 chiffres)" required>
+      <input id="reg-pseudo" type="text" placeholder="Pseudo (visible par tous)" maxlength="24" required>
+      <input id="reg-password" type="password" placeholder="Mot de passe" autocomplete="new-password" required>
+      <input id="reg-password-confirm" type="password" placeholder="Confirme le mot de passe" autocomplete="new-password" required>
+      <button type="button" class="primary" id="reg-submit">Terminer mon inscription</button>
+      <div class="auth-error" id="reg-error"></div>
+    </div>
+  </section>
+
+  <!-- ============ NOUVEAU MOT DE PASSE (récupération) ============ -->
+  <section id="reset-password-screen" class="screen auth-screen">
+    <h1>Nouveau mot de passe</h1>
+    <div class="auth-view active" style="max-width:280px;">
+      <input id="reset-password" type="password" placeholder="Nouveau mot de passe" autocomplete="new-password" required>
+      <input id="reset-password-confirm" type="password" placeholder="Confirme le mot de passe" autocomplete="new-password" required>
+      <button type="button" class="primary" id="reset-submit">Changer le mot de passe</button>
+      <div class="auth-error" id="reset-error"></div>
+    </div>
+  </section>
+
+  <!-- ============ ECRAN CONTACTS ============ -->
   <section id="contacts-screen" class="screen">
     <div class="topbar">
-      <div class="avatar" id="my-avatar">?</div>
-      <div>
-        <h2 id="my-username-label">Moi</h2>
-        <div class="sub">Chatty</div>
-      </div>
+      <div class="avatar-wrap" id="my-avatar-wrap"><div class="avatar" id="my-avatar">?</div></div>
+      <div><h2 id="my-username-label">Moi</h2><div class="sub">Toucher ton avatar pour éditer ton profil</div></div>
       <button class="icon-btn" id="refresh-contacts" title="Rafraîchir">⟳</button>
-      <button class="icon-btn" id="logout-btn" title="Se déconnecter">⎋</button>
     </div>
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="discussions-tab">Discussions</button>
       <button class="tab-btn" data-tab="friends-tab">Amis</button>
+      <button class="tab-btn" data-tab="groups-tab">Groupes</button>
     </div>
-    <div id="discussions-tab" class="tab-content active">
-      <div id="discussions-list"></div>
-    </div>
-    <div id="friends-tab" class="tab-content">
+    <div id="discussions-tab" class="tab-content active"><div id="discussions-list"></div></div>
+    <div id="friends-tab" class="tab-content"><div id="friends-list"></div></div>
+    <div id="groups-tab" class="tab-content">
       <button id="new-group-btn" type="button">➕ Créer un groupe</button>
-      <div id="group-create-panel" class="hidden">
+      <div id="group-create-panel" class="create-panel hidden">
         <input type="text" id="group-name-input" placeholder="Nom du groupe" maxlength="40">
         <div id="group-members-checklist"></div>
         <div class="actions">
-          <button type="button" id="group-create-cancel">Annuler</button>
-          <button type="button" id="group-create-submit">Créer</button>
+          <button type="button" class="btn-secondary" id="group-create-cancel">Annuler</button>
+          <button type="button" class="btn-primary" id="group-create-submit">Créer</button>
         </div>
       </div>
-      <div id="friends-list"></div>
+      <div id="groups-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ ECRAN PROFIL ============ -->
+  <section id="profile-screen" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" id="profile-back-btn">←</button>
+      <h2>Mon profil</h2>
+    </div>
+    <div id="profile-body">
+      <div id="profile-avatar-wrap">
+        <div id="profile-avatar">?</div>
+        <div id="profile-avatar-edit">📷</div>
+        <input type="file" id="profile-avatar-input" accept="image/*" class="hidden">
+      </div>
+      <div class="field-label">Pseudo (visible par tous)</div>
+      <input type="text" id="profile-pseudo-input" maxlength="24">
+      <div class="field-label">Prénom</div>
+      <input type="text" id="profile-first-name-input">
+      <div class="field-label">Nom</div>
+      <input type="text" id="profile-last-name-input">
+      <div class="field-label">Téléphone</div>
+      <input type="tel" id="profile-phone-input">
+      <button id="profile-save-btn" type="button">Enregistrer</button>
+      <div id="profile-status"></div>
+      <button id="profile-signout-btn" type="button">Se déconnecter</button>
     </div>
   </section>
 
@@ -227,17 +246,14 @@
   <section id="chat-screen" class="screen">
     <div class="topbar">
       <button class="icon-btn" id="back-btn">←</button>
-      <div class="avatar-wrap">
+      <div class="avatar-wrap" style="cursor:default;">
         <div class="avatar" id="peer-avatar">?</div>
         <div class="online-dot hidden" id="peer-online-dot"></div>
       </div>
       <div>
         <h2 id="peer-username-label">—</h2>
         <div class="sub" id="chat-sub">temps réel</div>
-        <div class="sub hidden" id="typing-indicator">
-          <span class="typing-dots"><span></span><span></span><span></span></span>
-          &nbsp;en train d'écrire...
-        </div>
+        <div class="sub hidden" id="typing-indicator"><span class="typing-dots"><span></span><span></span><span></span></span>&nbsp;en train d'écrire...</div>
       </div>
     </div>
     <div id="messages"><div class="row-empty" id="chat-empty">Aucun message pour l'instant. Dis bonjour 👋</div></div>
@@ -253,36 +269,35 @@
   <section id="admin-screen" class="screen">
     <div class="topbar">
       <div class="avatar admin">A</div>
-      <div>
-        <h2>Administration</h2>
-        <div class="sub">Accès complet</div>
-      </div>
+      <div><h2>Administration</h2><div class="sub">Accès complet</div></div>
       <button class="icon-btn" id="admin-logout-btn" title="Quitter l'administration">⎋</button>
     </div>
     <div class="tab-bar">
       <button class="tab-btn active" data-admin-tab="admin-users-tab">Utilisateurs</button>
-      <button class="tab-btn" data-admin-tab="admin-discussions-tab">Toutes les discussions</button>
+      <button class="tab-btn" data-admin-tab="admin-discussions-tab">Discussions</button>
+      <button class="tab-btn" data-admin-tab="admin-send-tab">Envoyer</button>
     </div>
     <div id="admin-users-tab" class="tab-content active">
-      <div id="add-user-box">
-        <input id="new-user-input" type="text" placeholder="Nouveau pseudo" maxlength="24">
-        <button type="button" id="add-user-btn">Ajouter</button>
-      </div>
+      <div id="admin-note">Les comptes sont créés par les utilisateurs eux-mêmes — tu peux les consulter et les supprimer ici.</div>
       <div id="admin-users-list"></div>
     </div>
-    <div id="admin-discussions-tab" class="tab-content">
-      <div id="admin-discussions-list"></div>
+    <div id="admin-discussions-tab" class="tab-content"><div id="admin-discussions-list"></div></div>
+    <div id="admin-send-tab" class="tab-content">
+      <label class="field-label">Destinataire</label>
+      <select id="admin-send-target">
+        <option value="">Tous les utilisateurs</option>
+      </select>
+      <textarea id="admin-send-content" rows="4" placeholder="Ton message..."></textarea>
+      <button type="button" id="admin-send-submit">Envoyer</button>
+      <div id="admin-send-status"></div>
     </div>
   </section>
 
-  <!-- ============ ECRAN ADMIN : DETAIL D'UNE DISCUSSION ============ -->
+  <!-- ============ ECRAN ADMIN : DETAIL ============ -->
   <section id="admin-thread-screen" class="screen">
     <div class="topbar">
       <button class="icon-btn" id="admin-thread-back-btn">←</button>
-      <div>
-        <h2 id="admin-thread-title">—</h2>
-        <div class="sub">Vue administrateur</div>
-      </div>
+      <div><h2 id="admin-thread-title">—</h2><div class="sub">Vue administrateur</div></div>
     </div>
     <div id="admin-thread-messages"></div>
   </section>
@@ -291,55 +306,57 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ===================================================================
-   CONFIGURATION SUPABASE
-   =================================================================== */
 const SUPABASE_URL = "https://vdrjnbiyxepslxiclpox.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_czTGbYl7EVehRbkjvEwhEw_JPWoH_Nb";
-
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const REDIRECT_URL = window.location.href.split("#")[0].split("?")[0];
 
-/* ---------------- Etat local ---------------- */
-let me = localStorage.getItem("chatty_username") || null;
-let activeConversation = null; // {type:'direct', peer} | {type:'group', groupId, groupName}
+let me = null; // { id, pseudo, avatar_url, first_name, last_name, phone, onboarded }
+let activeConversation = null;
 let messagesChannel = null;
 let globalChannel = null;
-let onlineUsernames = new Set();
+let onlineUserIds = new Set();
 let myGroupIds = new Set();
 let messagesCache = new Map();
+let profilesCache = new Map(); // id -> {id, pseudo, avatar_url, last_seen_at}
 let editingMessageId = null;
 let heartbeatTimer = null;
 
 const screens = {
   login: document.getElementById("login-screen"),
+  completeReg: document.getElementById("complete-registration-screen"),
+  resetPassword: document.getElementById("reset-password-screen"),
   contacts: document.getElementById("contacts-screen"),
+  profile: document.getElementById("profile-screen"),
   chat: document.getElementById("chat-screen"),
   admin: document.getElementById("admin-screen"),
   adminThread: document.getElementById("admin-thread-screen"),
 };
-function showScreen(name){
-  Object.values(screens).forEach(s => s.classList.remove("active"));
-  screens[name].classList.add("active");
-}
+function showScreen(name){ Object.values(screens).forEach(s => s.classList.remove("active")); screens[name].classList.add("active"); }
 function initials(name){ return (name || "?").trim().slice(0,2).toUpperCase(); }
-function escapeHtml(str){
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
+function escapeHtml(str){ const div = document.createElement("div"); div.textContent = str; return div.innerHTML; }
+function avatarInnerHtml(profile){
+  if(profile && profile.avatar_url) return `<img src="${profile.avatar_url}" alt="">`;
+  return initials(profile ? profile.pseudo : "?");
 }
 function playNotificationSound(){
   try{
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.type = "sine";
-    o.frequency.value = 880;
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.type = "sine"; o.frequency.value = 880;
     g.gain.setValueAtTime(0.15, ctx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-    o.connect(g); g.connect(ctx.destination);
-    o.start(); o.stop(ctx.currentTime + 0.35);
-  }catch(e){ /* audio indisponible, tant pis */ }
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.35);
+  }catch(e){}
 }
+
+/* ---------------- Navigation entre vues d'authentification ---------------- */
+document.querySelectorAll("[data-goto]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".auth-view").forEach(v => v.classList.remove("active"));
+    document.getElementById(btn.getAttribute("data-goto")).classList.add("active");
+  });
+});
 
 function setupTabs(barSelectorAttr, contentMap){
   document.querySelectorAll(`[${barSelectorAttr}]`).forEach(btn => {
@@ -352,206 +369,320 @@ function setupTabs(barSelectorAttr, contentMap){
     });
   });
 }
-setupTabs("data-tab", { d: "discussions-tab", f: "friends-tab" });
-setupTabs("data-admin-tab", { u: "admin-users-tab", c: "admin-discussions-tab" });
+setupTabs("data-tab", { d: "discussions-tab", f: "friends-tab", g: "groups-tab" });
+setupTabs("data-admin-tab", { u: "admin-users-tab", c: "admin-discussions-tab", s: "admin-send-tab" });
 
-/* ---------------- Login (utilisateur normal) ---------------- */
-const loginForm = document.getElementById("login-form");
-const usernameInput = document.getElementById("username-input");
-const loginError = document.getElementById("login-error");
-const loginSubmit = document.getElementById("login-submit");
+/* ==================================================================
+   AUTHENTIFICATION
+   ================================================================== */
 
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const desired = usernameInput.value.trim();
-  if(!desired) return;
-  loginError.textContent = "";
-  loginSubmit.disabled = true;
-  loginSubmit.textContent = "...";
+/* ---- Connexion (email ou pseudo + mot de passe), avec accès admin caché ---- */
+const signinIdentifier = document.getElementById("signin-identifier");
+const signinPassword = document.getElementById("signin-password");
+const signinError = document.getElementById("signin-error");
+const signinSubmit = document.getElementById("signin-submit");
+
+signinSubmit.addEventListener("click", async () => {
+  const identifier = signinIdentifier.value.trim();
+  const password = signinPassword.value;
+  if(!identifier || !password) return;
+  signinError.textContent = "";
+  signinSubmit.disabled = true;
   try{
-    const { data: existing, error: fetchErr } = await supabaseClient
-      .from("users").select("username").eq("username", desired).maybeSingle();
-    if(fetchErr) throw fetchErr;
-    if(!existing){
-      const { error: insertErr } = await supabaseClient.from("users").insert({ username: desired });
-      if(insertErr) throw insertErr;
+    if(identifier.toLowerCase() === "admin"){
+      const { data, error } = await supabaseClient.rpc("check_admin_passcode", { input_passcode: password });
+      if(!error && data === true){
+        sessionStorage.setItem("chatty_is_admin", "true");
+        sessionStorage.setItem("chatty_admin_passcode", password);
+        enterAdmin();
+      }else{
+        signinError.textContent = "Identifiants incorrects.";
+      }
+      return;
     }
-    me = desired;
-    localStorage.setItem("chatty_username", me);
-    enterContacts();
-  }catch(err){
-    console.error(err);
-    loginError.textContent = "Erreur : " + (err.message || "impossible de se connecter");
+    const { data: foundEmail, error: lookupErr } = await supabaseClient.rpc("get_email_for_login", { identifier });
+    if(lookupErr || !foundEmail){ signinError.textContent = "Identifiants incorrects."; return; }
+    const { error: signInErr } = await supabaseClient.auth.signInWithPassword({ email: foundEmail, password });
+    if(signInErr){ signinError.textContent = "Identifiants incorrects."; return; }
+    // onAuthStateChange (SIGNED_IN) prend le relais
   }finally{
-    loginSubmit.disabled = false;
-    loginSubmit.textContent = "Entrer";
+    signinSubmit.disabled = false;
   }
 });
 
-/* ---------------- Login (admin) ---------------- */
-const adminToggleLink = document.getElementById("admin-toggle-link");
-const adminLoginBox = document.getElementById("admin-login-box");
-const adminPasscodeInput = document.getElementById("admin-passcode-input");
-const adminLoginSubmit = document.getElementById("admin-login-submit");
-const adminLoginError = document.getElementById("admin-login-error");
+/* ---- Créer un compte (email -> lien de vérification) ---- */
+const signupEmail = document.getElementById("signup-email");
+const signupError = document.getElementById("signup-error");
+const signupSuccess = document.getElementById("signup-success");
+const signupSubmit = document.getElementById("signup-submit");
 
-adminToggleLink.addEventListener("click", () => adminLoginBox.classList.toggle("hidden"));
+signupSubmit.addEventListener("click", async () => {
+  const email = signupEmail.value.trim();
+  if(!email) return;
+  signupError.textContent = ""; signupSuccess.classList.add("hidden");
+  signupSubmit.disabled = true;
+  const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: REDIRECT_URL } });
+  signupSubmit.disabled = false;
+  if(error){ signupError.textContent = "Erreur : " + error.message; return; }
+  signupSuccess.textContent = "Lien envoyé ! Ouvre ta boîte mail (" + email + ") et clique dessus pour continuer ton inscription.";
+  signupSuccess.classList.remove("hidden");
+});
 
-adminLoginSubmit.addEventListener("click", async () => {
-  const code = adminPasscodeInput.value;
-  if(!code) return;
-  adminLoginError.textContent = "";
-  adminLoginSubmit.disabled = true;
+/* ---- Mot de passe oublié ---- */
+const forgotEmail = document.getElementById("forgot-email");
+const forgotError = document.getElementById("forgot-error");
+const forgotSuccess = document.getElementById("forgot-success");
+const forgotSubmit = document.getElementById("forgot-submit");
+
+forgotSubmit.addEventListener("click", async () => {
+  const email = forgotEmail.value.trim();
+  if(!email) return;
+  forgotError.textContent = ""; forgotSuccess.classList.add("hidden");
+  forgotSubmit.disabled = true;
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: REDIRECT_URL });
+  forgotSubmit.disabled = false;
+  if(error){ forgotError.textContent = "Erreur : " + error.message; return; }
+  forgotSuccess.textContent = "Lien envoyé ! Ouvre ta boîte mail (" + email + ") pour choisir un nouveau mot de passe.";
+  forgotSuccess.classList.remove("hidden");
+});
+
+/* ---- Nouveau mot de passe (après clic sur le lien de récupération) ---- */
+document.getElementById("reset-submit").addEventListener("click", async () => {
+  const p1 = document.getElementById("reset-password").value;
+  const p2 = document.getElementById("reset-password-confirm").value;
+  const errEl = document.getElementById("reset-error");
+  if(!p1 || p1.length < 6){ errEl.textContent = "6 caractères minimum."; return; }
+  if(p1 !== p2){ errEl.textContent = "Les mots de passe ne correspondent pas."; return; }
+  const { error } = await supabaseClient.auth.updateUser({ password: p1 });
+  if(error){ errEl.textContent = "Erreur : " + error.message; return; }
+  errEl.textContent = "";
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(session) await handleSignedIn(session.user.id);
+});
+
+/* ---- Fin d'inscription (après clic sur le lien de vérification) ---- */
+document.getElementById("reg-submit").addEventListener("click", async () => {
+  const firstName = document.getElementById("reg-first-name").value.trim();
+  const lastName = document.getElementById("reg-last-name").value.trim();
+  const phone = document.getElementById("reg-phone").value.trim();
+  const pseudo = document.getElementById("reg-pseudo").value.trim();
+  const pw1 = document.getElementById("reg-password").value;
+  const pw2 = document.getElementById("reg-password-confirm").value;
+  const errEl = document.getElementById("reg-error");
+  errEl.textContent = "";
+  if(!firstName || !lastName || !pseudo){ errEl.textContent = "Tous les champs sont obligatoires."; return; }
+  if(!/^\d{10}$/.test(phone)){ errEl.textContent = "Le numéro de téléphone doit contenir exactement 10 chiffres."; return; }
+  if(pw1.length < 6){ errEl.textContent = "Le mot de passe doit faire au moins 6 caractères."; return; }
+  if(pw1 !== pw2){ errEl.textContent = "Les mots de passe ne correspondent pas."; return; }
   try{
-    const { data, error } = await supabaseClient.rpc("check_admin_passcode", { input_passcode: code });
-    if(error) throw error;
-    if(data === true){
-      sessionStorage.setItem("chatty_is_admin", "true");
-      enterAdmin();
-    }else{
-      adminLoginError.textContent = "Code incorrect.";
-    }
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if(!session) throw new Error("Session expirée, réessaie de cliquer sur le lien reçu par email.");
+    const { error: pwErr } = await supabaseClient.auth.updateUser({ password: pw1 });
+    if(pwErr) throw pwErr;
+    const { error: profErr } = await supabaseClient.from("profiles").update({
+      first_name: firstName, last_name: lastName, phone, pseudo, onboarded: true
+    }).eq("id", session.user.id);
+    if(profErr) throw profErr;
+    await handleSignedIn(session.user.id);
   }catch(err){
-    console.error(err);
-    adminLoginError.textContent = "Erreur : " + (err.message || "vérification impossible");
-  }finally{
-    adminLoginSubmit.disabled = false;
+    errEl.textContent = err.message && err.message.includes("duplicate")
+      ? "Ce pseudo est déjà pris, choisis-en un autre."
+      : "Erreur : " + err.message;
   }
 });
 
+/* ---- Etat d'authentification global ---- */
+async function handleSignedIn(userId){
+  let { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", userId).maybeSingle();
+  if(!profile){
+    await new Promise(r => setTimeout(r, 900));
+    profile = (await supabaseClient.from("profiles").select("*").eq("id", userId).maybeSingle()).data;
+  }
+  if(!profile) return;
+  if(!profile.onboarded){
+    me = profile;
+    showScreen("completeReg");
+    return;
+  }
+  me = profile;
+  enterContacts();
+}
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if(event === "SIGNED_IN" && session) handleSignedIn(session.user.id);
+  if(event === "PASSWORD_RECOVERY") showScreen("resetPassword");
+  if(event === "SIGNED_OUT"){ me = null; cleanupOnSignOut(); showScreen("login"); }
+});
+
+function cleanupOnSignOut(){
+  clearInterval(heartbeatTimer);
+  if(globalChannel){ supabaseClient.removeChannel(globalChannel); globalChannel = null; }
+  unsubscribeFromMessages();
+}
+
+document.getElementById("profile-signout-btn").addEventListener("click", async () => { await supabaseClient.auth.signOut(); });
+
+/* ---- Admin logout ---- */
 document.getElementById("admin-logout-btn").addEventListener("click", () => {
   sessionStorage.removeItem("chatty_is_admin");
+  sessionStorage.removeItem("chatty_admin_passcode");
   showScreen("login");
 });
+function adminPasscode(){ return sessionStorage.getItem("chatty_admin_passcode") || ""; }
 
 /* ---------------- Présence & dernière connexion ---------------- */
 function startHeartbeat(){
   updateLastSeen();
   clearInterval(heartbeatTimer);
   heartbeatTimer = setInterval(updateLastSeen, 25000);
-  document.addEventListener("visibilitychange", () => {
-    if(document.visibilityState === "visible") updateLastSeen();
-  });
+  document.addEventListener("visibilitychange", () => { if(document.visibilityState === "visible") updateLastSeen(); });
 }
-async function updateLastSeen(){
-  if(!me) return;
-  await supabaseClient.from("users").update({ last_seen_at: new Date().toISOString() }).eq("username", me);
+async function updateLastSeen(){ if(!me) return; await supabaseClient.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("id", me.id); }
+function formatLastSeen(iso){ if(!iso) return "vu récemment"; return "vu à " + new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
+
+async function refreshProfilesCache(){
+  const { data, error } = await supabaseClient.from("public_profiles").select("*");
+  if(error){ console.error(error); return; }
+  profilesCache = new Map((data || []).map(p => [p.id, p]));
 }
-function formatLastSeen(iso){
-  if(!iso) return "vu récemment";
-  const d = new Date(iso);
-  return "vu à " + d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-}
+function profileOf(id){ return profilesCache.get(id) || { id, pseudo: "Utilisateur supprimé", avatar_url: null }; }
 
 /* ---------------- Canal global (présence + notifications) ---------------- */
 function setupGlobalChannel(){
   if(globalChannel) return;
-  globalChannel = supabaseClient.channel("global-presence", { config: { presence: { key: me } } });
+  globalChannel = supabaseClient.channel("global-presence", { config: { presence: { key: me.id } } });
   globalChannel
-    .on("presence", { event: "sync" }, () => {
-      const state = globalChannel.presenceState();
-      onlineUsernames = new Set(Object.keys(state));
-      renderOnlineIndicators();
-    })
+    .on("presence", { event: "sync" }, () => { onlineUserIds = new Set(Object.keys(globalChannel.presenceState())); renderOnlineIndicators(); })
     .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, handleGlobalNewMessage)
-    .subscribe(async (status) => {
-      if(status === "SUBSCRIBED"){
-        await globalChannel.track({ online_at: new Date().toISOString() });
-      }
-    });
+    .subscribe(async (status) => { if(status === "SUBSCRIBED") await globalChannel.track({ online_at: new Date().toISOString() }); });
 }
-
 function handleGlobalNewMessage(payload){
   const msg = payload.new;
-  if(msg.sender_username === me) return;
-  const isDirectToMe = msg.receiver_username === me;
+  if(msg.sender_id === me.id) return;
+  const isDirectToMe = msg.receiver_id === me.id;
   const isGroupOfMine = msg.group_id && myGroupIds.has(msg.group_id);
   if(!isDirectToMe && !isGroupOfMine) return;
-
-  const isCurrentlyOpen = activeConversation && (
-    (activeConversation.type === "direct" && isDirectToMe && msg.sender_username === activeConversation.peer) ||
-    (activeConversation.type === "group" && isGroupOfMine && msg.group_id === activeConversation.groupId)
+  const isOpen = activeConversation && (
+    (activeConversation.type === "direct" && isDirectToMe && msg.sender_id === activeConversation.peerId) ||
+    (activeConversation.type === "group" && isGroupOfMine && msg.group_id === activeConversation.groupId) ||
+    (activeConversation.type === "admin-broadcast" && msg.from_admin)
   );
-  if(!isCurrentlyOpen){
+  if(!isOpen){
     playNotificationSound();
-    if(!screens.contacts.classList.contains("hidden") && screens.contacts.classList.contains("active")){
-      loadDiscussions();
-    }
+    if(screens.contacts.classList.contains("active")) loadDiscussions();
   }
 }
-
 function renderOnlineIndicators(){
-  document.querySelectorAll("[data-online-for]").forEach(dot => {
-    const username = dot.getAttribute("data-online-for");
-    dot.classList.toggle("hidden", !onlineUsernames.has(username));
-  });
-  if(activeConversation && activeConversation.type === "direct"){
-    updateChatHeaderStatus();
-  }
+  document.querySelectorAll("[data-online-for]").forEach(dot => dot.classList.toggle("hidden", !onlineUserIds.has(dot.getAttribute("data-online-for"))));
+  if(activeConversation && activeConversation.type === "direct") updateChatHeaderStatus();
 }
-
 async function updateChatHeaderStatus(){
-  const peer = activeConversation.peer;
-  const online = onlineUsernames.has(peer);
+  const peerId = activeConversation.peerId;
+  const online = onlineUserIds.has(peerId);
   document.getElementById("peer-online-dot").classList.toggle("hidden", !online);
-  if(online){
-    chatSubEl.textContent = "en ligne";
-  }else{
-    const { data } = await supabaseClient.from("users").select("last_seen_at").eq("username", peer).maybeSingle();
+  if(online){ chatSubEl.textContent = "en ligne"; }
+  else{
+    const { data } = await supabaseClient.from("public_profiles").select("last_seen_at").eq("id", peerId).maybeSingle();
     chatSubEl.textContent = data ? formatLastSeen(data.last_seen_at) : "hors ligne";
   }
 }
 
-/* ---------------- Contacts : Discussions + Amis ---------------- */
-const discussionsList = document.getElementById("discussions-list");
-const friendsList = document.getElementById("friends-list");
+/* ---------------- Profil ---------------- */
+const myAvatarWrap = document.getElementById("my-avatar-wrap");
 const myAvatar = document.getElementById("my-avatar");
 const myUsernameLabel = document.getElementById("my-username-label");
+const profileAvatar = document.getElementById("profile-avatar");
+const profileStatus = document.getElementById("profile-status");
+const profileAvatarInput = document.getElementById("profile-avatar-input");
+
+myAvatarWrap.addEventListener("click", openProfileScreen);
+document.getElementById("profile-back-btn").addEventListener("click", () => showScreen("contacts"));
+document.getElementById("profile-avatar-edit").addEventListener("click", () => profileAvatarInput.click());
+
+function openProfileScreen(){
+  profileAvatar.innerHTML = avatarInnerHtml(me);
+  document.getElementById("profile-pseudo-input").value = me.pseudo || "";
+  document.getElementById("profile-first-name-input").value = me.first_name || "";
+  document.getElementById("profile-last-name-input").value = me.last_name || "";
+  document.getElementById("profile-phone-input").value = me.phone || "";
+  profileStatus.textContent = "";
+  showScreen("profile");
+}
+
+document.getElementById("profile-save-btn").addEventListener("click", async () => {
+  const pseudo = document.getElementById("profile-pseudo-input").value.trim();
+  const firstName = document.getElementById("profile-first-name-input").value.trim();
+  const lastName = document.getElementById("profile-last-name-input").value.trim();
+  const phone = document.getElementById("profile-phone-input").value.trim();
+  if(!pseudo){ profileStatus.textContent = "Le pseudo est obligatoire."; return; }
+  if(phone && !/^\d{10}$/.test(phone)){ profileStatus.textContent = "Le téléphone doit contenir 10 chiffres."; return; }
+  const { error } = await supabaseClient.from("profiles").update({ pseudo, first_name: firstName, last_name: lastName, phone }).eq("id", me.id);
+  if(error){
+    profileStatus.textContent = error.message.includes("duplicate") ? "Ce pseudo est déjà pris." : "Erreur : " + error.message;
+    return;
+  }
+  Object.assign(me, { pseudo, first_name: firstName, last_name: lastName, phone });
+  profileStatus.textContent = "Profil mis à jour.";
+  myAvatar.innerHTML = avatarInnerHtml(me);
+  myUsernameLabel.textContent = me.pseudo;
+  await refreshProfilesCache();
+});
+
+profileAvatarInput.addEventListener("change", async () => {
+  const file = profileAvatarInput.files[0];
+  profileAvatarInput.value = "";
+  if(!file) return;
+  profileStatus.textContent = "Envoi...";
+  try{
+    const ext = file.name.split(".").pop();
+    const path = `${me.id}/${Date.now()}.${ext}`;
+    const { error: upErr } = await supabaseClient.storage.from("avatars").upload(path, file);
+    if(upErr) throw upErr;
+    const { data: pub } = supabaseClient.storage.from("avatars").getPublicUrl(path);
+    const { error: updErr } = await supabaseClient.from("profiles").update({ avatar_url: pub.publicUrl }).eq("id", me.id);
+    if(updErr) throw updErr;
+    me.avatar_url = pub.publicUrl;
+    profileAvatar.innerHTML = avatarInnerHtml(me);
+    myAvatar.innerHTML = avatarInnerHtml(me);
+    profileStatus.textContent = "Photo mise à jour.";
+    await refreshProfilesCache();
+  }catch(err){ profileStatus.textContent = "Erreur : " + err.message; }
+});
+
+/* ---------------- Contacts : Discussions / Amis / Groupes ---------------- */
+const discussionsList = document.getElementById("discussions-list");
+const friendsList = document.getElementById("friends-list");
+const groupsListEl = document.getElementById("groups-list");
 
 async function enterContacts(){
-  myAvatar.textContent = initials(me);
-  myUsernameLabel.textContent = me;
+  myAvatar.innerHTML = avatarInnerHtml(me);
+  myUsernameLabel.textContent = me.pseudo;
   showScreen("contacts");
   setupGlobalChannel();
   startHeartbeat();
+  await refreshProfilesCache();
   await loadMyGroupIds();
-  await Promise.all([loadDiscussions(), loadFriends()]);
+  await Promise.all([loadDiscussions(), loadFriends(), loadGroupsTab()]);
 }
 
 async function loadMyGroupIds(){
-  const { data, error } = await supabaseClient
-    .from("group_members").select("group_id").eq("username", me);
+  const { data, error } = await supabaseClient.from("group_members").select("group_id").eq("user_id", me.id);
   if(error){ console.error(error); return; }
   myGroupIds = new Set((data || []).map(r => r.group_id));
 }
 
 async function loadFriends(){
   friendsList.innerHTML = "<div class='row-empty'>Chargement...</div>";
-  const { data, error } = await supabaseClient
-    .from("users").select("username").neq("username", me).order("username", { ascending: true });
-  if(error){
-    friendsList.innerHTML = "<div class='row-empty'>Erreur de chargement.</div>";
-    console.error(error);
-    return;
-  }
-  if(!data || data.length === 0){
-    friendsList.innerHTML = "<div class='row-empty'>Personne d'autre pour l'instant. Partage l'app à un ami !</div>";
-    return;
-  }
+  const { data, error } = await supabaseClient.from("public_profiles").select("*").neq("id", me.id).order("pseudo");
+  if(error){ friendsList.innerHTML = "<div class='row-empty'>Erreur de chargement.</div>"; console.error(error); return; }
+  if(!data || data.length === 0){ friendsList.innerHTML = "<div class='row-empty'>Personne d'autre pour l'instant. Partage l'app à un ami !</div>"; return; }
   friendsList.innerHTML = "";
-  data.forEach(u => {
+  data.forEach(p => {
     const row = document.createElement("div");
     row.className = "list-row";
-    row.innerHTML = `
-      <div class="avatar-wrap">
-        <div class="avatar">${initials(u.username)}</div>
-        <div class="online-dot hidden" data-online-for="${escapeHtml(u.username)}"></div>
-      </div>
-      <div class="row-main">
-        <div class="row-name">${escapeHtml(u.username)}</div>
-        <div class="row-hint">Toucher pour discuter</div>
-      </div>`;
-    row.addEventListener("click", () => enterDirectChat(u.username));
+    row.innerHTML = `<div class="avatar-wrap"><div class="avatar">${avatarInnerHtml(p)}</div><div class="online-dot hidden" data-online-for="${p.id}"></div></div>
+      <div class="row-main"><div class="row-name">${escapeHtml(p.pseudo || "—")}</div><div class="row-hint">Toucher pour discuter</div></div>`;
+    row.addEventListener("click", () => enterDirectChat(p.id));
     friendsList.appendChild(row);
   });
   renderOnlineIndicators();
@@ -559,148 +690,108 @@ async function loadFriends(){
 
 async function loadDiscussions(){
   discussionsList.innerHTML = "<div class='row-empty'>Chargement...</div>";
+  const { data: directMsgs, error } = await supabaseClient
+    .from("messages").select("*").is("group_id", null)
+    .or(`sender_id.eq.${me.id},receiver_id.eq.${me.id}`).order("created_at", { ascending: false });
+  if(error) console.error(error);
 
-  // --- Discussions privées ---
-  const { data: directMsgs, error: directErr } = await supabaseClient
-    .from("messages").select("*")
-    .is("group_id", null)
-    .or(`sender_username.eq.${me},receiver_username.eq.${me}`)
-    .order("created_at", { ascending: false });
-  if(directErr) console.error(directErr);
-
-  const directByPeer = new Map();
+  const byPeer = new Map();
   (directMsgs || []).forEach(m => {
-    const peer = m.sender_username === me ? m.receiver_username : m.sender_username;
-    if(!directByPeer.has(peer)) directByPeer.set(peer, { lastMsg: m, unread: 0 });
-    if(m.receiver_username === me && !m.read_at) directByPeer.get(peer).unread++;
+    const key = m.from_admin ? "admin-broadcast" : (m.sender_id === me.id ? m.receiver_id : m.sender_id);
+    if(!byPeer.has(key)) byPeer.set(key, { lastMsg: m, unread: 0 });
+    if(m.receiver_id === me.id && !m.read_at) byPeer.get(key).unread++;
   });
 
-  // --- Discussions de groupe ---
-  const { data: myGroups, error: groupsErr } = await supabaseClient
-    .from("group_members").select("groups(id, name, created_at)").eq("username", me);
-  if(groupsErr) console.error(groupsErr);
+  if(byPeer.size === 0){ discussionsList.innerHTML = "<div class='row-empty'>Aucune discussion pour l'instant. Va dans l'onglet Amis pour en démarrer une.</div>"; return; }
 
-  const groupEntries = [];
-  for(const row of (myGroups || [])){
-    const g = row.groups;
-    if(!g) continue;
-    const { data: lastMsgArr } = await supabaseClient
-      .from("messages").select("*").eq("group_id", g.id)
-      .order("created_at", { ascending: false }).limit(1);
-    const lastMsg = (lastMsgArr && lastMsgArr[0]) || null;
-    const seenKey = "chatty_group_seen_" + g.id;
-    const seenAt = localStorage.getItem(seenKey);
-    const hasUnread = lastMsg && lastMsg.sender_username !== me && (!seenAt || new Date(lastMsg.created_at) > new Date(seenAt));
-    groupEntries.push({
-      type: "group", key: g.id, name: g.name,
-      sortTime: lastMsg ? lastMsg.created_at : g.created_at,
-      lastMsg, hasUnread
-    });
-  }
-
-  const directEntries = [];
-  directByPeer.forEach((entry, peer) => {
-    directEntries.push({ type: "direct", key: peer, name: peer, sortTime: entry.lastMsg.created_at, lastMsg: entry.lastMsg, unread: entry.unread });
-  });
-
-  const all = [...directEntries, ...groupEntries].sort((a,b) => new Date(b.sortTime) - new Date(a.sortTime));
-
-  if(all.length === 0){
-    discussionsList.innerHTML = "<div class='row-empty'>Aucune discussion pour l'instant. Va dans l'onglet Amis pour en démarrer une.</div>";
-    return;
-  }
+  const entries = Array.from(byPeer.entries()).map(([key, v]) => ({
+    key, lastMsg: v.lastMsg, unread: v.unread,
+    isAdmin: key === "admin-broadcast",
+    name: key === "admin-broadcast" ? "Administration" : profileOf(key).pseudo
+  })).sort((a,b) => new Date(b.lastMsg.created_at) - new Date(a.lastMsg.created_at));
 
   discussionsList.innerHTML = "";
-  all.forEach(entry => {
+  entries.forEach(entry => {
     const row = document.createElement("div");
     row.className = "list-row";
-    const time = entry.lastMsg ? new Date(entry.lastMsg.created_at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "";
-    let hint = "Aucun message pour l'instant";
-    if(entry.lastMsg){
-      const prefix = entry.lastMsg.sender_username === me ? "Toi : " : (entry.type === "group" ? entry.lastMsg.sender_username + " : " : "");
-      const body = entry.lastMsg.deleted ? "Message supprimé" : (entry.lastMsg.image_url ? "📷 Photo" : entry.lastMsg.content);
-      hint = prefix + body;
-    }
-    const avatarHtml = entry.type === "group"
-      ? `<div class="avatar group">${initials(entry.name)}</div>`
-      : `<div class="avatar-wrap"><div class="avatar">${initials(entry.name)}</div><div class="online-dot hidden" data-online-for="${escapeHtml(entry.name)}"></div></div>`;
-    const badgeHtml = entry.type === "direct"
-      ? (entry.unread > 0 ? `<div class="unread-badge">${entry.unread}</div>` : "")
-      : (entry.hasUnread ? `<div class="unread-dot"></div>` : "");
-    row.innerHTML = `
-      ${avatarHtml}
-      <div class="row-main">
-        <div class="row-name">${escapeHtml(entry.name)}</div>
-        <div class="row-hint">${escapeHtml(hint)}</div>
-      </div>
-      <div class="row-time">${time}${badgeHtml}</div>`;
-    row.addEventListener("click", () => {
-      if(entry.type === "group") enterGroupChat(entry.key, entry.name);
-      else enterDirectChat(entry.key);
-    });
+    const time = new Date(entry.lastMsg.created_at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+    const senderName = entry.lastMsg.sender_id === me.id ? "Toi" : entry.name;
+    const body = entry.lastMsg.deleted ? "Message supprimé" : (entry.lastMsg.image_url ? "📷 Photo" : entry.lastMsg.content);
+    const hint = (entry.isAdmin ? "" : senderName + " : ") + body;
+    const avatarHtml = entry.isAdmin
+      ? `<div class="avatar admin">🛡</div>`
+      : `<div class="avatar-wrap"><div class="avatar">${avatarInnerHtml(profileOf(entry.key))}</div><div class="online-dot hidden" data-online-for="${entry.key}"></div></div>`;
+    const badgeHtml = entry.unread > 0 ? `<div class="unread-badge">${entry.unread}</div>` : "";
+    row.innerHTML = `${avatarHtml}<div class="row-main"><div class="row-name">${escapeHtml(entry.name)}</div><div class="row-hint">${escapeHtml(hint)}</div></div><div class="row-time">${time}${badgeHtml}</div>`;
+    row.addEventListener("click", () => entry.isAdmin ? enterAdminBroadcastThread() : enterDirectChat(entry.key));
     discussionsList.appendChild(row);
   });
   renderOnlineIndicators();
 }
 
-document.getElementById("refresh-contacts").addEventListener("click", () => {
-  loadDiscussions();
-  loadFriends();
-});
-document.getElementById("logout-btn").addEventListener("click", () => {
-  localStorage.removeItem("chatty_username");
-  me = null;
-  clearInterval(heartbeatTimer);
-  if(globalChannel){ supabaseClient.removeChannel(globalChannel); globalChannel = null; }
-  showScreen("login");
+document.getElementById("refresh-contacts").addEventListener("click", async () => {
+  await refreshProfilesCache();
+  loadDiscussions(); loadFriends(); loadGroupsTab();
 });
 
-/* ---------------- Création de groupe ---------------- */
+/* ---------------- Groupes (onglet dédié) ---------------- */
 const newGroupBtn = document.getElementById("new-group-btn");
 const groupCreatePanel = document.getElementById("group-create-panel");
 const groupNameInput = document.getElementById("group-name-input");
 const groupMembersChecklist = document.getElementById("group-members-checklist");
 
-newGroupBtn.addEventListener("click", async () => {
+async function loadGroupsTab(){
+  groupsListEl.innerHTML = "<div class='row-empty'>Chargement...</div>";
+  const { data: myGroups, error } = await supabaseClient.from("group_members").select("groups(id, name, created_at)").eq("user_id", me.id);
+  if(error){ groupsListEl.innerHTML = "<div class='row-empty'>Erreur de chargement.</div>"; console.error(error); return; }
+  const groups = (myGroups || []).map(r => r.groups).filter(Boolean);
+  if(groups.length === 0){ groupsListEl.innerHTML = "<div class='row-empty'>Tu n'es dans aucun groupe. Crée-en un !</div>"; return; }
+  const rows = [];
+  for(const g of groups){
+    const { data: lastArr } = await supabaseClient.from("messages").select("*").eq("group_id", g.id).order("created_at", { ascending: false }).limit(1);
+    const lastMsg = (lastArr && lastArr[0]) || null;
+    const seenAt = localStorage.getItem("chatty_group_seen_" + g.id);
+    const hasUnread = lastMsg && lastMsg.sender_id !== me.id && (!seenAt || new Date(lastMsg.created_at) > new Date(seenAt));
+    rows.push({ g, lastMsg, hasUnread, sortTime: lastMsg ? lastMsg.created_at : g.created_at });
+  }
+  rows.sort((a,b) => new Date(b.sortTime) - new Date(a.sortTime));
+  groupsListEl.innerHTML = "";
+  rows.forEach(({ g, lastMsg, hasUnread }) => {
+    const row = document.createElement("div");
+    row.className = "list-row";
+    const time = lastMsg ? new Date(lastMsg.created_at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "";
+    const hint = lastMsg ? ((lastMsg.sender_id === me.id ? "Toi" : profileOf(lastMsg.sender_id).pseudo) + " : " + (lastMsg.deleted ? "Message supprimé" : (lastMsg.image_url ? "📷 Photo" : lastMsg.content))) : "Aucun message pour l'instant";
+    row.innerHTML = `<div class="avatar group">${initials(g.name)}</div><div class="row-main"><div class="row-name">${escapeHtml(g.name)}</div><div class="row-hint">${escapeHtml(hint)}</div></div><div class="row-time">${time}${hasUnread ? "<div class='unread-dot'></div>" : ""}</div>`;
+    row.addEventListener("click", () => enterGroupChat(g.id, g.name));
+    groupsListEl.appendChild(row);
+  });
+}
+
+newGroupBtn.addEventListener("click", () => {
   groupCreatePanel.classList.remove("hidden");
-  groupMembersChecklist.innerHTML = "Chargement...";
-  const { data, error } = await supabaseClient.from("users").select("username").neq("username", me).order("username");
-  if(error){ groupMembersChecklist.innerHTML = "Erreur de chargement."; return; }
-  if(!data || data.length === 0){ groupMembersChecklist.innerHTML = "Aucun autre utilisateur à ajouter."; return; }
-  groupMembersChecklist.innerHTML = data.map(u => `
-    <label class="member-check-row">
-      <input type="checkbox" value="${escapeHtml(u.username)}"> ${escapeHtml(u.username)}
-    </label>`).join("");
+  const others = Array.from(profilesCache.values()).filter(p => p.id !== me.id).sort((a,b) => (a.pseudo||"").localeCompare(b.pseudo||""));
+  groupMembersChecklist.innerHTML = others.length === 0 ? "Aucun autre utilisateur à ajouter."
+    : others.map(p => `<label class="member-check-row"><input type="checkbox" value="${p.id}"> ${escapeHtml(p.pseudo)}</label>`).join("");
 });
-
-document.getElementById("group-create-cancel").addEventListener("click", () => {
-  groupCreatePanel.classList.add("hidden");
-  groupNameInput.value = "";
-});
-
+document.getElementById("group-create-cancel").addEventListener("click", () => { groupCreatePanel.classList.add("hidden"); groupNameInput.value = ""; });
 document.getElementById("group-create-submit").addEventListener("click", async () => {
   const name = groupNameInput.value.trim();
   const checked = Array.from(groupMembersChecklist.querySelectorAll("input:checked")).map(i => i.value);
   if(!name){ alert("Donne un nom au groupe."); return; }
   if(checked.length === 0){ alert("Sélectionne au moins un membre."); return; }
   try{
-    const { data: group, error: gErr } = await supabaseClient
-      .from("groups").insert({ name, created_by: me }).select().single();
+    const { data: group, error: gErr } = await supabaseClient.from("groups").insert({ name, created_by: me.id }).select().single();
     if(gErr) throw gErr;
-    const members = [me, ...checked].map(username => ({ group_id: group.id, username }));
+    const members = [me.id, ...checked].map(user_id => ({ group_id: group.id, user_id }));
     const { error: mErr } = await supabaseClient.from("group_members").insert(members);
     if(mErr) throw mErr;
-    groupCreatePanel.classList.add("hidden");
-    groupNameInput.value = "";
-    await loadMyGroupIds();
-    loadDiscussions();
+    groupCreatePanel.classList.add("hidden"); groupNameInput.value = "";
+    await loadMyGroupIds(); loadGroupsTab();
     enterGroupChat(group.id, group.name);
-  }catch(err){
-    alert("Erreur : " + err.message);
-  }
+  }catch(err){ alert("Erreur : " + err.message); }
 });
 
-/* ---------------- Chat (1-à-1 et groupe) ---------------- */
+/* ---------------- Chat (1-à-1, groupe, admin-broadcast) ---------------- */
 const messagesEl = document.getElementById("messages");
 const peerAvatar = document.getElementById("peer-avatar");
 const peerUsernameLabel = document.getElementById("peer-username-label");
@@ -709,100 +800,77 @@ const messageInput = document.getElementById("message-input");
 const chatSubEl = document.getElementById("chat-sub");
 const typingIndicatorEl = document.getElementById("typing-indicator");
 
-async function enterDirectChat(peer){
-  activeConversation = { type: "direct", peer };
-  peerAvatar.className = "avatar";
-  peerAvatar.textContent = initials(peer);
-  peerUsernameLabel.textContent = peer;
-  document.getElementById("typing-indicator").classList.add("hidden");
-  chatSubEl.classList.remove("hidden");
-  chatSubEl.textContent = "temps réel";
+async function enterDirectChat(peerId){
+  const peer = profileOf(peerId);
+  activeConversation = { type: "direct", peerId };
+  composer.classList.remove("hidden");
+  peerAvatar.className = "avatar"; peerAvatar.innerHTML = avatarInnerHtml(peer);
+  peerUsernameLabel.textContent = peer.pseudo;
+  typingIndicatorEl.classList.add("hidden"); chatSubEl.classList.remove("hidden"); chatSubEl.textContent = "temps réel";
   showScreen("chat");
   updateChatHeaderStatus();
-  await loadMessages();
-  subscribeToMessages();
+  await loadMessages(); subscribeToMessages();
 }
 
 async function enterGroupChat(groupId, groupName){
   activeConversation = { type: "group", groupId, groupName };
-  peerAvatar.className = "avatar group";
-  peerAvatar.textContent = initials(groupName);
+  composer.classList.remove("hidden");
+  peerAvatar.className = "avatar group"; peerAvatar.innerHTML = initials(groupName);
   peerUsernameLabel.textContent = groupName;
   document.getElementById("peer-online-dot").classList.add("hidden");
-  document.getElementById("typing-indicator").classList.add("hidden");
-  chatSubEl.classList.remove("hidden");
-  chatSubEl.textContent = "groupe";
+  typingIndicatorEl.classList.add("hidden"); chatSubEl.classList.remove("hidden"); chatSubEl.textContent = "groupe";
   showScreen("chat");
-  await loadMessages();
-  subscribeToMessages();
+  await loadMessages(); subscribeToMessages();
   localStorage.setItem("chatty_group_seen_" + groupId, new Date().toISOString());
 }
 
+async function enterAdminBroadcastThread(){
+  activeConversation = { type: "admin-broadcast" };
+  composer.classList.add("hidden");
+  peerAvatar.className = "avatar admin"; peerAvatar.innerHTML = "🛡";
+  peerUsernameLabel.textContent = "Administration";
+  document.getElementById("peer-online-dot").classList.add("hidden");
+  typingIndicatorEl.classList.add("hidden"); chatSubEl.classList.remove("hidden"); chatSubEl.textContent = "messages de l'administration";
+  showScreen("chat");
+  await loadMessages(); subscribeToMessages();
+}
+
 document.getElementById("back-btn").addEventListener("click", () => {
-  unsubscribeFromMessages();
-  activeConversation = null;
-  editingMessageId = null;
-  showScreen("contacts");
-  loadDiscussions();
+  unsubscribeFromMessages(); activeConversation = null; editingMessageId = null;
+  composer.classList.remove("hidden");
+  showScreen("contacts"); loadDiscussions(); loadGroupsTab();
 });
 
 function ticksHtml(msg){
-  if(activeConversation.type !== "direct") return "";
-  if(msg.sender_username !== me) return "";
-  const read = !!msg.read_at;
-  return `<span class="ticks ${read ? "read" : "unread"}">✓✓</span>`;
+  if(activeConversation.type !== "direct" || msg.sender_id !== me.id) return "";
+  return `<span class="ticks ${msg.read_at ? "read" : "unread"}">✓✓</span>`;
 }
 
 function renderMessageRow(msg){
-  const mine = msg.sender_username === me;
+  const mine = msg.sender_id === me.id;
   const isEditing = editingMessageId === msg.id;
   const time = new Date(msg.created_at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-  const senderLabel = (activeConversation.type === "group" && !mine)
-    ? `<span class="sender-label">${escapeHtml(msg.sender_username)}</span>` : "";
+  const senderLabel = msg.from_admin ? `<span class="sender-label">🛡 Administration</span>`
+    : (activeConversation.type === "group" && !mine) ? `<span class="sender-label">${escapeHtml(profileOf(msg.sender_id).pseudo)}</span>` : "";
 
   if(msg.deleted){
-    return `
-      <div class="bubble-row ${mine ? "me" : "them"}" data-id="${msg.id}">
-        <div class="bubble ${mine ? "me" : "them"} deleted">
-          ${senderLabel}Message supprimé
-          <div class="meta"><span class="time">${time}</span></div>
-        </div>
-      </div>`;
+    return `<div class="bubble-row ${mine ? "me" : "them"}" data-id="${msg.id}"><div class="bubble ${mine ? "me" : "them"} deleted">${senderLabel}Message supprimé<div class="meta"><span class="time">${time}</span></div></div></div>`;
   }
-
   if(isEditing){
-    return `
-      <div class="bubble-row ${mine ? "me" : "them"}" data-id="${msg.id}">
-        <div class="bubble ${mine ? "me" : "them"}">
-          <div class="edit-box">
-            <input type="text" class="edit-input" data-id="${msg.id}" value="${escapeHtml(msg.content)}">
-            <div class="edit-actions">
-              <button type="button" data-action="save-edit" data-id="${msg.id}" style="background:var(--teal);color:#fff;">✓</button>
-              <button type="button" data-action="cancel-edit" data-id="${msg.id}" style="background:#eee;">✕</button>
-            </div>
-          </div>
-        </div>
-      </div>`;
+    return `<div class="bubble-row ${mine ? "me" : "them"}" data-id="${msg.id}"><div class="bubble ${mine ? "me" : "them"}">
+      <div class="edit-box"><input type="text" class="edit-input" data-id="${msg.id}" value="${escapeHtml(msg.content)}">
+      <div class="edit-actions"><button type="button" data-action="save-edit" data-id="${msg.id}" style="background:var(--teal);color:#fff;">✓</button>
+      <button type="button" data-action="cancel-edit" data-id="${msg.id}" style="background:#eee;">✕</button></div></div></div></div>`;
   }
-
   const imageHtml = msg.image_url ? `<img class="msg-image" src="${msg.image_url}" alt="photo" onclick="window.open('${msg.image_url}','_blank')">` : "";
   const editedLabel = msg.edited_at ? `<span class="edited-label">modifié</span>` : "";
-  const actionsHtml = mine ? `
-    <div class="msg-actions">
-      ${msg.image_url ? "" : `<button type="button" class="msg-action-btn" data-action="edit" data-id="${msg.id}">modifier</button>`}
-      <button type="button" class="msg-action-btn" data-action="delete" data-id="${msg.id}">supprimer</button>
-    </div>` : "";
+  const canEditDelete = mine && !msg.from_admin;
+  const actionsHtml = canEditDelete ? `<div class="msg-actions">${msg.image_url ? "" : `<button type="button" class="msg-action-btn" data-action="edit" data-id="${msg.id}">modifier</button>`}<button type="button" class="msg-action-btn" data-action="delete" data-id="${msg.id}">supprimer</button></div>` : "";
 
-  return `
-    <div class="bubble-row ${mine ? "me" : "them"}" data-id="${msg.id}">
-      <div class="bubble ${mine ? "me" : "them"}">
-        ${senderLabel}
-        ${imageHtml}
-        ${escapeHtml(msg.content)}
-        <div class="meta">${editedLabel}<span class="time">${time}</span>${ticksHtml(msg)}</div>
-        ${actionsHtml}
-      </div>
-    </div>`;
+  return `<div class="bubble-row ${mine ? "me" : "them"}" data-id="${msg.id}"><div class="bubble ${mine ? "me" : "them"} ${msg.from_admin ? "admin-msg" : ""}">
+    ${senderLabel}${imageHtml}${escapeHtml(msg.content)}
+    <div class="meta">${editedLabel}<span class="time">${time}</span>${ticksHtml(msg)}</div>
+    ${actionsHtml}</div></div>`;
 }
 
 function refreshMessageRow(id){
@@ -817,20 +885,15 @@ async function loadMessages(){
   messagesCache = new Map();
   let query = supabaseClient.from("messages").select("*").order("created_at", { ascending: true });
   if(activeConversation.type === "direct"){
-    query = query.or(`and(sender_username.eq.${me},receiver_username.eq.${activeConversation.peer}),and(sender_username.eq.${activeConversation.peer},receiver_username.eq.${me})`);
-  }else{
+    query = query.or(`and(sender_id.eq.${me.id},receiver_id.eq.${activeConversation.peerId}),and(sender_id.eq.${activeConversation.peerId},receiver_id.eq.${me.id})`);
+  }else if(activeConversation.type === "group"){
     query = query.eq("group_id", activeConversation.groupId);
+  }else{
+    query = query.eq("receiver_id", me.id).eq("from_admin", true);
   }
   const { data, error } = await query;
-  if(error){
-    messagesEl.innerHTML = "<div class='row-empty' id='chat-empty'>Erreur de chargement.</div>";
-    console.error(error);
-    return;
-  }
-  if(!data || data.length === 0){
-    messagesEl.innerHTML = "<div class='row-empty' id='chat-empty'>Aucun message pour l'instant. Dis bonjour 👋</div>";
-    return;
-  }
+  if(error){ messagesEl.innerHTML = "<div class='row-empty' id='chat-empty'>Erreur de chargement.</div>"; console.error(error); return; }
+  if(!data || data.length === 0){ messagesEl.innerHTML = "<div class='row-empty' id='chat-empty'>Aucun message pour l'instant. Dis bonjour 👋</div>"; return; }
   data.forEach(m => messagesCache.set(m.id, m));
   messagesEl.innerHTML = data.map(renderMessageRow).join("");
   scrollToBottom();
@@ -838,32 +901,26 @@ async function loadMessages(){
 }
 
 async function markMessagesAsRead(){
-  const { error } = await supabaseClient
-    .from("messages").update({ read_at: new Date().toISOString() })
-    .eq("sender_username", activeConversation.peer).eq("receiver_username", me).is("read_at", null).select();
+  const { error } = await supabaseClient.from("messages").update({ read_at: new Date().toISOString() })
+    .eq("sender_id", activeConversation.peerId).eq("receiver_id", me.id).is("read_at", null).select();
   if(error) console.error(error);
 }
 
 function scrollToBottom(){ messagesEl.scrollTop = messagesEl.scrollHeight; }
-
 function conversationChannelName(){
-  return activeConversation.type === "direct"
-    ? "conv-" + [me, activeConversation.peer].sort().join("-")
-    : "group-" + activeConversation.groupId;
+  if(activeConversation.type === "direct") return "conv-" + [me.id, activeConversation.peerId].sort().join("-");
+  if(activeConversation.type === "group") return "group-" + activeConversation.groupId;
+  return "admin-broadcast-" + me.id;
 }
-
 function belongsToActiveConversation(msg){
-  if(activeConversation.type === "direct"){
-    return (msg.sender_username === me && msg.receiver_username === activeConversation.peer) ||
-           (msg.sender_username === activeConversation.peer && msg.receiver_username === me);
-  }
-  return msg.group_id === activeConversation.groupId;
+  if(activeConversation.type === "direct") return (msg.sender_id === me.id && msg.receiver_id === activeConversation.peerId) || (msg.sender_id === activeConversation.peerId && msg.receiver_id === me.id);
+  if(activeConversation.type === "group") return msg.group_id === activeConversation.groupId;
+  return msg.from_admin && msg.receiver_id === me.id;
 }
 
 function subscribeToMessages(){
   unsubscribeFromMessages();
-  messagesChannel = supabaseClient
-    .channel(conversationChannelName())
+  messagesChannel = supabaseClient.channel(conversationChannelName())
     .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload) => {
       const msg = payload.new;
       if(!belongsToActiveConversation(msg)) return;
@@ -871,7 +928,7 @@ function subscribeToMessages(){
       if(messagesEl.querySelector("#chat-empty")) messagesEl.innerHTML = "";
       messagesEl.insertAdjacentHTML("beforeend", renderMessageRow(msg));
       scrollToBottom();
-      if(activeConversation.type === "direct" && msg.sender_username === activeConversation.peer) markMessagesAsRead();
+      if(activeConversation.type === "direct" && msg.sender_id === activeConversation.peerId) markMessagesAsRead();
       if(activeConversation.type === "group") localStorage.setItem("chatty_group_seen_" + activeConversation.groupId, new Date().toISOString());
     })
     .on("postgres_changes", { event: "UPDATE", schema: "public", table: "messages" }, (payload) => {
@@ -882,100 +939,68 @@ function subscribeToMessages(){
     })
     .on("broadcast", { event: "typing" }, (payload) => {
       const from = payload.payload && payload.payload.from;
-      if(!from || from === me) return;
-      if(activeConversation.type === "direct" && from === activeConversation.peer) showTypingIndicator();
-      if(activeConversation.type === "group") showTypingIndicator(from);
+      if(!from || from === me.id) return;
+      if(activeConversation.type === "direct" && from === activeConversation.peerId) showTypingIndicator();
+      if(activeConversation.type === "group") showTypingIndicator(profileOf(from).pseudo);
     })
     .subscribe();
 }
+function unsubscribeFromMessages(){ if(messagesChannel){ supabaseClient.removeChannel(messagesChannel); messagesChannel = null; } clearTimeout(typingHideTimer); }
 
-function unsubscribeFromMessages(){
-  if(messagesChannel){ supabaseClient.removeChannel(messagesChannel); messagesChannel = null; }
-  clearTimeout(typingHideTimer);
-}
-
-/* ---------------- Indicateur "en train d'écrire" ---------------- */
-let typingHideTimer = null;
-let typingSendThrottle = null;
-
+let typingHideTimer = null, typingSendThrottle = null;
 function showTypingIndicator(fromName){
-  chatSubEl.classList.add("hidden");
-  typingIndicatorEl.classList.remove("hidden");
+  chatSubEl.classList.add("hidden"); typingIndicatorEl.classList.remove("hidden");
   typingIndicatorEl.lastChild.textContent = fromName ? `\u00a0${fromName} écrit...` : "\u00a0en train d'écrire...";
   clearTimeout(typingHideTimer);
-  typingHideTimer = setTimeout(() => {
-    typingIndicatorEl.classList.add("hidden");
-    chatSubEl.classList.remove("hidden");
-  }, 3000);
+  typingHideTimer = setTimeout(() => { typingIndicatorEl.classList.add("hidden"); chatSubEl.classList.remove("hidden"); }, 3000);
 }
-
-function broadcastTyping(){
-  if(!messagesChannel) return;
-  messagesChannel.send({ type: "broadcast", event: "typing", payload: { from: me } });
-}
-
-messageInput.addEventListener("input", () => {
-  if(typingSendThrottle) return;
-  broadcastTyping();
-  typingSendThrottle = setTimeout(() => { typingSendThrottle = null; }, 2000);
-});
+function broadcastTyping(){ if(!messagesChannel || activeConversation.type === "admin-broadcast") return; messagesChannel.send({ type: "broadcast", event: "typing", payload: { from: me.id } }); }
+messageInput.addEventListener("input", () => { if(typingSendThrottle) return; broadcastTyping(); typingSendThrottle = setTimeout(() => { typingSendThrottle = null; }, 2000); });
 
 composer.addEventListener("submit", async (e) => {
   e.preventDefault();
   const content = messageInput.value.trim();
-  if(!content) return;
+  if(!content || activeConversation.type === "admin-broadcast") return;
   messageInput.value = "";
   const payload = activeConversation.type === "direct"
-    ? { sender_username: me, receiver_username: activeConversation.peer, content }
-    : { sender_username: me, group_id: activeConversation.groupId, content };
+    ? { sender_id: me.id, receiver_id: activeConversation.peerId, content }
+    : { sender_id: me.id, group_id: activeConversation.groupId, content };
   const { error } = await supabaseClient.from("messages").insert(payload);
-  if(error){ console.error(error); alert("Message non envoyé : " + error.message); }
+  if(error){ alert("Message non envoyé : " + error.message); }
 });
 
-/* ---------------- Envoi de photo ---------------- */
 const attachBtn = document.getElementById("attach-btn");
 const imageInput = document.getElementById("image-input");
 attachBtn.addEventListener("click", () => imageInput.click());
 imageInput.addEventListener("change", async () => {
-  const file = imageInput.files[0];
-  imageInput.value = "";
-  if(!file) return;
+  const file = imageInput.files[0]; imageInput.value = "";
+  if(!file || activeConversation.type === "admin-broadcast") return;
   attachBtn.textContent = "…";
   try{
     const ext = file.name.split(".").pop();
-    const path = `${me}/${Date.now()}.${ext}`;
+    const path = `${me.id}/${Date.now()}.${ext}`;
     const { error: upErr } = await supabaseClient.storage.from("chat-images").upload(path, file);
     if(upErr) throw upErr;
     const { data: pub } = supabaseClient.storage.from("chat-images").getPublicUrl(path);
     const payload = activeConversation.type === "direct"
-      ? { sender_username: me, receiver_username: activeConversation.peer, content: "", image_url: pub.publicUrl }
-      : { sender_username: me, group_id: activeConversation.groupId, content: "", image_url: pub.publicUrl };
+      ? { sender_id: me.id, receiver_id: activeConversation.peerId, content: "", image_url: pub.publicUrl }
+      : { sender_id: me.id, group_id: activeConversation.groupId, content: "", image_url: pub.publicUrl };
     const { error: insErr } = await supabaseClient.from("messages").insert(payload);
     if(insErr) throw insErr;
-  }catch(err){
-    alert("Erreur d'envoi de la photo : " + err.message);
-  }finally{
-    attachBtn.textContent = "📎";
-  }
+  }catch(err){ alert("Erreur d'envoi de la photo : " + err.message); }
+  finally{ attachBtn.textContent = "📎"; }
 });
 
-/* ---------------- Edition / suppression de ses messages ---------------- */
 messagesEl.addEventListener("click", async (e) => {
   const editBtn = e.target.closest("[data-action='edit']");
   const delBtn = e.target.closest("[data-action='delete']");
   const saveBtn = e.target.closest("[data-action='save-edit']");
   const cancelBtn = e.target.closest("[data-action='cancel-edit']");
-
-  if(editBtn){
-    editingMessageId = editBtn.dataset.id;
-    refreshMessageRow(editingMessageId);
-  }else if(cancelBtn){
-    editingMessageId = null;
-    refreshMessageRow(cancelBtn.dataset.id);
-  }else if(saveBtn){
+  if(editBtn){ editingMessageId = editBtn.dataset.id; refreshMessageRow(editingMessageId); }
+  else if(cancelBtn){ editingMessageId = null; refreshMessageRow(cancelBtn.dataset.id); }
+  else if(saveBtn){
     const id = saveBtn.dataset.id;
-    const input = messagesEl.querySelector(`.edit-input[data-id="${id}"]`);
-    const newContent = input.value.trim();
+    const newContent = messagesEl.querySelector(`.edit-input[data-id="${id}"]`).value.trim();
     editingMessageId = null;
     if(!newContent) return;
     const nowIso = new Date().toISOString();
@@ -998,97 +1023,65 @@ messagesEl.addEventListener("click", async (e) => {
    ================================================================== */
 async function enterAdmin(){
   showScreen("admin");
-  await Promise.all([loadAdminUsers(), loadAdminDiscussions()]);
+  await Promise.all([loadAdminUsers(), loadAdminDiscussions(), loadAdminSendTargets()]);
 }
 
 const adminUsersList = document.getElementById("admin-users-list");
-const newUserInput = document.getElementById("new-user-input");
-
 async function loadAdminUsers(){
   adminUsersList.innerHTML = "<div class='row-empty'>Chargement...</div>";
-  const { data, error } = await supabaseClient.from("users").select("username, created_at").order("username", { ascending: true });
+  const { data, error } = await supabaseClient.from("public_profiles").select("*").order("pseudo");
   if(error){ adminUsersList.innerHTML = "<div class='row-empty'>Erreur de chargement.</div>"; console.error(error); return; }
   if(!data || data.length === 0){ adminUsersList.innerHTML = "<div class='row-empty'>Aucun utilisateur pour l'instant.</div>"; return; }
   adminUsersList.innerHTML = "";
-  data.forEach(u => {
+  data.forEach(p => {
     const row = document.createElement("div");
     row.className = "list-row";
-    row.innerHTML = `
-      <div class="avatar">${initials(u.username)}</div>
-      <div class="row-main">
-        <div class="row-name">${escapeHtml(u.username)}</div>
-        <div class="row-hint">Inscrit le ${new Date(u.created_at).toLocaleDateString()}</div>
-      </div>
-      <button class="row-action-btn" data-username="${escapeHtml(u.username)}">Supprimer</button>`;
+    row.innerHTML = `<div class="avatar">${avatarInnerHtml(p)}</div>
+      <div class="row-main"><div class="row-name">${escapeHtml(p.pseudo || "—")}</div><div class="row-hint">Inscrit le ${new Date(p.created_at).toLocaleDateString()}</div></div>
+      <button class="row-action-btn" data-id="${p.id}">Supprimer</button>`;
     row.querySelector(".row-action-btn").addEventListener("click", async (ev) => {
       ev.stopPropagation();
-      if(!confirm(`Supprimer ${u.username} et tous ses messages ?`)) return;
-      const { error: delErr } = await supabaseClient.from("users").delete().eq("username", u.username);
+      if(!confirm(`Supprimer ${p.pseudo} et tous ses messages ?`)) return;
+      const { error: delErr } = await supabaseClient.rpc("admin_delete_user", { input_passcode: adminPasscode(), target_user_id: p.id });
       if(delErr){ alert("Erreur : " + delErr.message); return; }
-      loadAdminUsers();
-      loadAdminDiscussions();
+      loadAdminUsers(); loadAdminDiscussions(); loadAdminSendTargets();
     });
     adminUsersList.appendChild(row);
   });
 }
 
-document.getElementById("add-user-btn").addEventListener("click", async () => {
-  const username = newUserInput.value.trim();
-  if(!username) return;
-  const { error } = await supabaseClient.from("users").insert({ username });
-  if(error){ alert("Erreur : " + error.message); return; }
-  newUserInput.value = "";
-  loadAdminUsers();
-});
-
 const adminDiscussionsList = document.getElementById("admin-discussions-list");
-
 async function loadAdminDiscussions(){
   adminDiscussionsList.innerHTML = "<div class='row-empty'>Chargement...</div>";
-  const { data: directMsgs, error } = await supabaseClient
-    .from("messages").select("*").is("group_id", null).order("created_at", { ascending: false });
-  const { data: groups, error: gErr } = await supabaseClient
-    .from("groups").select("id, name, created_at").order("created_at", { ascending: false });
+  const { data: allMsgs, error } = await supabaseClient.rpc("admin_list_all_messages", { input_passcode: adminPasscode() });
+  const { data: groups, error: gErr } = await supabaseClient.from("groups").select("id, name, created_at").order("created_at", { ascending: false });
+  const { data: profiles } = await supabaseClient.from("public_profiles").select("*");
+  const pMap = new Map((profiles||[]).map(p=>[p.id,p]));
+  const nameOf = id => (pMap.get(id) && pMap.get(id).pseudo) || "Utilisateur supprimé";
   if(error || gErr){ adminDiscussionsList.innerHTML = "<div class='row-empty'>Erreur de chargement.</div>"; console.error(error || gErr); return; }
 
+  const directMsgs = (allMsgs || []).filter(m => !m.group_id && !m.from_admin);
   const byPair = new Map();
-  (directMsgs || []).forEach(m => {
-    const key = [m.sender_username, m.receiver_username].sort().join(" ↔ ");
-    if(!byPair.has(key)) byPair.set(key, { lastMsg: m, pair: [m.sender_username, m.receiver_username].sort(), type: "direct" });
+  directMsgs.forEach(m => {
+    const key = [m.sender_id, m.receiver_id].sort().join(" ↔ ");
+    if(!byPair.has(key)) byPair.set(key, { lastMsg: m, pair: [m.sender_id, m.receiver_id].sort() });
   });
-
-  const groupRows = [];
-  for(const g of (groups || [])){
-    const { data: lastMsgArr } = await supabaseClient
-      .from("messages").select("*").eq("group_id", g.id).order("created_at", { ascending: false }).limit(1);
-    groupRows.push({ type: "group", groupId: g.id, name: g.name, lastMsg: (lastMsgArr && lastMsgArr[0]) || null, createdAt: g.created_at });
-  }
-
-  const directRows = Array.from(byPair.entries()).map(([key, v]) => ({ type: "direct", key, ...v }));
-  const combined = [...directRows, ...groupRows].sort((a,b) => {
-    const ta = a.lastMsg ? a.lastMsg.created_at : a.createdAt;
-    const tb = b.lastMsg ? b.lastMsg.created_at : b.createdAt;
-    return new Date(tb) - new Date(ta);
-  });
+  const groupRows = (groups || []).map(g => ({ type:"group", groupId:g.id, name:g.name, lastMsg:(allMsgs||[]).filter(m=>m.group_id===g.id)[0]||null, createdAt:g.created_at }));
+  const directRows = Array.from(byPair.entries()).map(([key, v]) => ({ type:"direct", key, ...v }));
+  const combined = [...directRows, ...groupRows].sort((a,b) => new Date((b.lastMsg?b.lastMsg.created_at:b.createdAt)) - new Date((a.lastMsg?a.lastMsg.created_at:a.createdAt)));
 
   if(combined.length === 0){ adminDiscussionsList.innerHTML = "<div class='row-empty'>Aucune discussion pour l'instant.</div>"; return; }
-
   adminDiscussionsList.innerHTML = "";
   combined.forEach(entry => {
     const row = document.createElement("div");
     row.className = "list-row";
-    const label = entry.type === "group" ? "🔷 " + entry.name : entry.key;
+    const label = entry.type === "group" ? "🔷 " + entry.name : entry.pair.map(nameOf).join(" ↔ ");
     const time = entry.lastMsg ? new Date(entry.lastMsg.created_at).toLocaleString([], {dateStyle:"short", timeStyle:"short"}) : "";
     const hint = entry.lastMsg ? (entry.lastMsg.deleted ? "Message supprimé" : (entry.lastMsg.image_url ? "📷 Photo" : entry.lastMsg.content)) : "Aucun message";
-    row.innerHTML = `
-      <div class="row-main">
-        <div class="row-name">${escapeHtml(label)}</div>
-        <div class="row-hint">${escapeHtml(hint)}</div>
-      </div>
-      <div class="row-time">${time}</div>`;
+    row.innerHTML = `<div class="row-main"><div class="row-name">${escapeHtml(label)}</div><div class="row-hint">${escapeHtml(hint)}</div></div><div class="row-time">${time}</div>`;
     row.addEventListener("click", () => {
-      if(entry.type === "group") enterAdminThread({ type: "group", groupId: entry.groupId, name: entry.name });
-      else enterAdminThread({ type: "direct", a: entry.pair[0], b: entry.pair[1] });
+      entry.type === "group" ? enterAdminThread({ type:"group", groupId:entry.groupId, name:entry.name })
+                              : enterAdminThread({ type:"direct", a:entry.pair[0], b:entry.pair[1] });
     });
     adminDiscussionsList.appendChild(row);
   });
@@ -1097,49 +1090,45 @@ async function loadAdminDiscussions(){
 let adminThreadContext = null;
 const adminThreadMessages = document.getElementById("admin-thread-messages");
 const adminThreadTitle = document.getElementById("admin-thread-title");
-
 async function enterAdminThread(ctx){
   adminThreadContext = ctx;
-  adminThreadTitle.textContent = ctx.type === "group" ? ctx.name : `${ctx.a} ↔ ${ctx.b}`;
+  if(ctx.type === "group"){ adminThreadTitle.textContent = ctx.name; }
+  else{
+    const { data: profiles } = await supabaseClient.from("public_profiles").select("*").in("id", [ctx.a, ctx.b]);
+    const pMap = new Map((profiles||[]).map(p=>[p.id,p]));
+    adminThreadTitle.textContent = `${(pMap.get(ctx.a)||{}).pseudo || "?"} ↔ ${(pMap.get(ctx.b)||{}).pseudo || "?"}`;
+  }
   showScreen("adminThread");
   await loadAdminThreadMessages();
 }
-
 document.getElementById("admin-thread-back-btn").addEventListener("click", () => showScreen("admin"));
-
-function adminBubbleHtml(msg){
-  const mine = adminThreadContext.type === "group" ? false : msg.sender_username === adminThreadContext.a;
-  const time = new Date(msg.created_at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-  const body = msg.deleted ? "Message supprimé" : (msg.image_url ? `<img class="msg-image" src="${msg.image_url}" alt="photo">` + escapeHtml(msg.content) : escapeHtml(msg.content));
-  return `
-    <div class="bubble-row ${mine ? "me" : "them"}" data-id="${msg.id}">
-      <div class="bubble ${mine ? "me" : "them"} ${msg.deleted ? "deleted" : ""}">
-        <span class="sender-label">${escapeHtml(msg.sender_username)}</span>
-        ${body}
-        <div class="meta">
-          <span class="time">${time}</span>
-          ${msg.deleted ? "" : `<button class="msg-action-btn" data-admin-del="${msg.id}">supprimer</button>`}
-        </div>
-      </div>
-    </div>`;
-}
 
 async function loadAdminThreadMessages(){
   adminThreadMessages.innerHTML = "<div class='row-empty'>Chargement...</div>";
-  let query = supabaseClient.from("messages").select("*").order("created_at", { ascending: true });
-  if(adminThreadContext.type === "group"){
-    query = query.eq("group_id", adminThreadContext.groupId);
-  }else{
-    const { a, b } = adminThreadContext;
-    query = query.or(`and(sender_username.eq.${a},receiver_username.eq.${b}),and(sender_username.eq.${b},receiver_username.eq.${a})`);
-  }
-  const { data, error } = await query;
+  const { data: allMsgs, error } = await supabaseClient.rpc("admin_list_all_messages", { input_passcode: adminPasscode() });
   if(error){ adminThreadMessages.innerHTML = "<div class='row-empty'>Erreur de chargement.</div>"; console.error(error); return; }
-  adminThreadMessages.innerHTML = data.map(adminBubbleHtml).join("");
+  const ids = adminThreadContext.type === "direct" ? [adminThreadContext.a, adminThreadContext.b] : [];
+  const { data: profiles } = await supabaseClient.from("public_profiles").select("*").in("id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]);
+  const pMap = new Map((profiles||[]).map(p=>[p.id,p]));
+  const nameOf = id => (pMap.get(id) && pMap.get(id).pseudo) || "Utilisateur supprimé";
+
+  let data = adminThreadContext.type === "group"
+    ? allMsgs.filter(m => m.group_id === adminThreadContext.groupId)
+    : allMsgs.filter(m => !m.group_id && ((m.sender_id === adminThreadContext.a && m.receiver_id === adminThreadContext.b) || (m.sender_id === adminThreadContext.b && m.receiver_id === adminThreadContext.a)));
+  data = data.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+  adminThreadMessages.innerHTML = data.map(msg => {
+    const mine = adminThreadContext.type === "direct" ? msg.sender_id === adminThreadContext.a : false;
+    const time = new Date(msg.created_at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+    const senderName = msg.from_admin ? "🛡 Administration" : nameOf(msg.sender_id);
+    const body = msg.deleted ? "Message supprimé" : (msg.image_url ? `<img class="msg-image" src="${msg.image_url}" alt="photo">` + escapeHtml(msg.content) : escapeHtml(msg.content));
+    return `<div class="bubble-row ${mine ? "me" : "them"}" data-id="${msg.id}"><div class="bubble ${mine ? "me" : "them"} ${msg.deleted ? "deleted" : ""}">
+      <span class="sender-label">${escapeHtml(senderName)}</span>${body}
+      <div class="meta"><span class="time">${time}</span>${msg.deleted ? "" : `<button class="msg-action-btn" data-admin-del="${msg.id}">supprimer</button>`}</div></div></div>`;
+  }).join("");
   adminThreadMessages.querySelectorAll("[data-admin-del]").forEach(btn => {
     btn.addEventListener("click", async () => {
       if(!confirm("Supprimer ce message ?")) return;
-      const { error: delErr } = await supabaseClient.from("messages").delete().eq("id", btn.dataset.adminDel);
+      const { error: delErr } = await supabaseClient.rpc("admin_delete_message", { input_passcode: adminPasscode(), target_message_id: btn.dataset.adminDel });
       if(delErr){ alert("Erreur : " + delErr.message); return; }
       loadAdminThreadMessages();
     });
@@ -1147,12 +1136,35 @@ async function loadAdminThreadMessages(){
   adminThreadMessages.scrollTop = adminThreadMessages.scrollHeight;
 }
 
-/* ---------------- Démarrage ---------------- */
-if(sessionStorage.getItem("chatty_is_admin") === "true"){
-  enterAdmin();
-}else if(me){
-  enterContacts();
+/* ---- Envoyer un message (admin) ---- */
+const adminSendTarget = document.getElementById("admin-send-target");
+const adminSendContent = document.getElementById("admin-send-content");
+const adminSendStatus = document.getElementById("admin-send-status");
+
+async function loadAdminSendTargets(){
+  const { data, error } = await supabaseClient.from("public_profiles").select("*").order("pseudo");
+  if(error) return;
+  adminSendTarget.innerHTML = `<option value="">Tous les utilisateurs</option>` +
+    (data || []).map(p => `<option value="${p.id}">${escapeHtml(p.pseudo || "—")}</option>`).join("");
 }
+
+document.getElementById("admin-send-submit").addEventListener("click", async () => {
+  const target = adminSendTarget.value || null;
+  const content = adminSendContent.value.trim();
+  if(!content){ adminSendStatus.textContent = "Écris un message."; return; }
+  adminSendStatus.textContent = "Envoi...";
+  const { error } = await supabaseClient.rpc("admin_send_message", { input_passcode: adminPasscode(), target_user_id: target, msg_content: content });
+  if(error){ adminSendStatus.textContent = "Erreur : " + error.message; return; }
+  adminSendStatus.textContent = "Message envoyé.";
+  adminSendContent.value = "";
+});
+
+/* ---------------- Démarrage ---------------- */
+(async function start(){
+  if(sessionStorage.getItem("chatty_is_admin") === "true"){ enterAdmin(); return; }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(session) await handleSignedIn(session.user.id);
+})();
 </script>
 </body>
 </html>
